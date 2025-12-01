@@ -25,8 +25,8 @@
      inkscape:document-units="px"
      showgrid="true"
      inkscape:zoom="9.1797468"
-     inkscape:cx="19.553916"
-     inkscape:cy="5.719112"
+     inkscape:cx="28.377689"
+     inkscape:cy="23.148787"
      inkscape:window-width="1366"
      inkscape:window-height="745"
      inkscape:window-x="-8"
@@ -181,5 +181,13 @@
        cx="25"
        cy="8"
        r="2" />
+    <path
+       style="fill:#00ff00;stroke:none;stroke-width:4.80547;stroke-linecap:round"
+       d="M 0,34.123077 16,50 15.883211,34 Z"
+       id="path11" />
+    <path
+       style="fill:#00ff00;stroke:none;stroke-width:4.80547;stroke-linecap:round"
+       d="M 16,51.123077 0,67 0.116789,51 Z"
+       id="path12" />
   </g>
 </svg>

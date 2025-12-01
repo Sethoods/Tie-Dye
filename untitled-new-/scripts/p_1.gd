@@ -5,9 +5,10 @@ const SPEED = 125.0
 const JUMP_VELOCITY = -400.0
 
 const MIN_ACCEL = 1
-const MAX_ACCEL = 3
-const RATE_GROWTH_ACCEL = 1.5
+const MAX_ACCEL = 2.5
+const RATE_GROWTH_ACCEL = 0.75
 
+var direction := 0.0
 var floor_angle := 0.0
 var slope_dir: Vector2
 
@@ -15,6 +16,7 @@ var accel : float = 0.0
 var rolling : bool = false
 var roll_accel : float = 0.0
 
+@export var proj_scene = preload("res://scenes/paper.tscn")
 var shooting : bool = false
 
 func animate(delta: float) -> void:
@@ -33,35 +35,47 @@ func animate(delta: float) -> void:
 		else:
 			$AnimatedSprite2D.play("jump")
 	$AnimatedSprite2D.speed_scale = 1 + (accel-1)
-	print(accel)
 
+func shoot(delta: float):
+	var player_proj = proj_scene.instantiate()
+	player_proj.player = self
+	get_parent().add_child(player_proj)
+	player_proj.global_position = $Marker2D.global_position
 
 func _physics_process(delta: float) -> void:
-	floor_snap_length = 50 if rolling else 10
+	floor_snap_length = 30 if rolling else 5
+	floor_max_angle = PI/2.1
+	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		velocity.x -= velocity.x/10*delta
 
-	if Input.is_action_pressed("accelerate"):
-		accel += RATE_GROWTH_ACCEL*delta
-	else:
-		accel = move_toward(accel, 0, RATE_GROWTH_ACCEL*100*delta)
+	#if Input.is_action_pressed("accelerate"):
+	#	accel += RATE_GROWTH_ACCEL*delta
+	#else:
+	#	accel = move_toward(accel, 0, RATE_GROWTH_ACCEL*100*delta)
 
 	accel = clamp(accel, MIN_ACCEL, MAX_ACCEL)		
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
-	var direction := Input.get_axis("move_left", "move_right")
+	direction = Input.get_axis("move_left", "move_right")
 	if direction:
 		if not rolling:
 			var max_movement_speed = SPEED * accel
 			velocity.x = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED * 10) * delta) 
+			accel += RATE_GROWTH_ACCEL*delta
 		else:
-			rolling = false
-
+			if velocity.x < 0.1 or velocity.x > -0.1:
+				if velocity.x >= 0.1 and direction < 0 or velocity.x <= 0.1 and direction > 0 :
+					rolling = false
+			else:
+				velocity.x -= -velocity.x*delta
+			
 #		print("%s"%[slope_dir])
 	elif not rolling and is_on_floor():
 		velocity.x = move_toward(velocity.x, 0, SPEED)
+		accel = move_toward(accel, 0, RATE_GROWTH_ACCEL*100*delta)
 		
 		
 	if Input.is_action_just_pressed("jump") and is_on_floor():
@@ -69,8 +83,9 @@ func _physics_process(delta: float) -> void:
 		velocity.x = velocity.x
 		rolling = false
 		
-	if Input.is_action_just_pressed("shoot"):
+	if Input.is_action_just_pressed("shoot") and not rolling:
 		shooting = true
+		shoot(delta)
 		
 		
 	if Input.is_action_just_pressed("crouch") and is_on_floor():
@@ -80,7 +95,9 @@ func _physics_process(delta: float) -> void:
 		var floor_normal = get_floor_normal()
 		var ground_angle = rad_to_deg(floor_normal.angle_to((Vector2.UP)))
 		if ground_angle > 2 or ground_angle < -2:
-			roll_accel = min(roll_accel + 10 * delta, 1500) 
+			roll_accel = min(roll_accel + 10 * delta, 1750) 
+		else:
+			roll_accel = -roll_accel*delta*10
 		var tangent = Vector2(floor_normal.y, -floor_normal.x).normalized()
 		if tangent.dot(Vector2.DOWN) < 0:
 			tangent = -tangent

@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://c788sfrv8kllu"]
+[gd_scene load_steps=13 format=3 uid="uid://c788sfrv8kllu"]
 
 [ext_resource type="Script" uid="uid://bdpuc04hrh0gk" path="res://scripts/p_1.gd" id="1_vokph"]
 [ext_resource type="Texture2D" uid="uid://uk4lnoo6yt7e" path="res://art/test_sprite.png" id="2_vokph"]
+[ext_resource type="Script" uid="uid://ch1pmqey7oqc3" path="res://scripts/marker_2d.gd" id="3_6u33n"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vokph"]
 size = Vector2(15, 16)
@@ -29,6 +30,10 @@ region = Rect2(128, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_iveaq"]
 atlas = ExtResource("2_vokph")
 region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vokph"]
+atlas = ExtResource("2_vokph")
+region = Rect2(288, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_m008u"]
 animations = [{
@@ -73,7 +78,10 @@ animations = [{
 "name": &"slide",
 "speed": 5.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vokph")
+}],
 "loop": true,
 "name": &"throw",
 "speed": 5.0
@@ -88,8 +96,11 @@ shape = SubResource("RectangleShape2D_vokph")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-1, 0)
-zoom = Vector2(1.5, 1.5)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"move"
+animation = &"throw"
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(14, -3)
+script = ExtResource("3_6u33n")
