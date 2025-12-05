@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://d32tobrlt6vxl"]
+
+[ext_resource type="Texture2D" uid="uid://dyjwr73f6073h" path="res://art/test enem.svg" id="1_ja1ip"]
+[ext_resource type="Script" uid="uid://bgim08b6pcpp3" path="res://scripts/boksy.gd" id="1_u7pnd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u7pnd"]
+atlas = ExtResource("1_ja1ip")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_llj3d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u7pnd")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="boksy" type="CharacterBody2D"]
+script = ExtResource("1_u7pnd")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_llj3d")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-16, -16, -15, 6, 0, 15, 15, 7, 15, -16)
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(-18, 14)

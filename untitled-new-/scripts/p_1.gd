@@ -5,8 +5,8 @@ const SPEED = 125.0
 const JUMP_VELOCITY = -400.0
 
 const MIN_ACCEL = 1
-const MAX_ACCEL = 2.5
-const RATE_GROWTH_ACCEL = 0.75
+const MAX_ACCEL = 3
+const RATE_GROWTH_ACCEL = 0.5
 
 var direction := 0.0
 var floor_angle := 0.0
@@ -95,9 +95,9 @@ func _physics_process(delta: float) -> void:
 		var floor_normal = get_floor_normal()
 		var ground_angle = rad_to_deg(floor_normal.angle_to((Vector2.UP)))
 		if ground_angle > 2 or ground_angle < -2:
-			roll_accel = min(roll_accel + 10 * delta, 1750) 
+			roll_accel = min(roll_accel + 10 * delta, 2000) 
 		else:
-			roll_accel = -roll_accel*delta*10
+			roll_accel = 1
 		var tangent = Vector2(floor_normal.y, -floor_normal.x).normalized()
 		if tangent.dot(Vector2.DOWN) < 0:
 			tangent = -tangent
