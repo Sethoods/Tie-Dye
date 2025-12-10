@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://b5lmxcbpp3eaa"]
 
-[ext_resource type="Script" uid="uid://bdgfrks46g5gq" path="res://scripts/mylevel.gd" id="1_ihyw0"]
+[ext_resource type="Script" uid="uid://bdgfrks46g5gq" path="res://scenes/scripts/mylevel.gd" id="1_ihyw0"]
 [ext_resource type="PackedScene" uid="uid://dkiwy771wd18a" path="res://scenes/terrain1.tscn" id="1_ybe71"]
 [ext_resource type="Texture2D" uid="uid://b7bks2w6bvs6f" path="res://art/test bg.svg" id="2_hod4y"]
 [ext_resource type="PackedScene" uid="uid://c788sfrv8kllu" path="res://scenes/p1.tscn" id="2_ihyw0"]
