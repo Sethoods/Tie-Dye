@@ -9,22 +9,20 @@ func _physics_process(delta: float) -> void:
 	counter = false
 	velocity.y += get_gravity().y * delta
 	velocity.x = speed * direction
+	floor_max_angle=PI/2.1
 	
-	var ahead_cell = tilemap.local_to_map(global_position + Vector2(direction * 16, 16))
+	var ahead_cell = tilemap.local_to_map(global_position + Vector2(direction * 8, 0))
 
-	for i in range(0,6):
+	for i in range(0,3):
 			if tilemap.get_cell_source_id(ahead_cell + Vector2i(0, i)) != -1:
 				counter = true
-				print(str(counter) + ", air below infront")
+				#print(str(counter) + ", air below infront")
 				break
 				
-	var wall_cell = tilemap.local_to_map(global_position + Vector2(direction * 16, -8))
-
-	var wall_ahead := tilemap.get_cell_source_id(wall_cell) != -1
-
-
+	#var wall_cell = tilemap.local_to_map(global_position + Vector2(direction * 16, -8))
 			
-	if counter != true or wall_ahead:
+	if counter != true or $RayCastForward.is_colliding():
+		scale.x *= -1
 		direction *= -1
 	
 	move_and_slide()

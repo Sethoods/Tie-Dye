@@ -1,8 +1,8 @@
 [gd_scene load_steps=13 format=3 uid="uid://c788sfrv8kllu"]
 
-[ext_resource type="Script" uid="uid://bdpuc04hrh0gk" path="res://scenes/scripts/p_1.gd" id="1_vokph"]
+[ext_resource type="Script" uid="uid://bdpuc04hrh0gk" path="res://scripts/p_1.gd" id="1_vokph"]
 [ext_resource type="Texture2D" uid="uid://uk4lnoo6yt7e" path="res://art/test_sprite.png" id="2_vokph"]
-[ext_resource type="Script" uid="uid://ch1pmqey7oqc3" path="res://scenes/scripts/marker_2d.gd" id="3_6u33n"]
+[ext_resource type="Script" uid="uid://ch1pmqey7oqc3" path="res://scripts/marker_2d.gd" id="3_6u33n"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vokph"]
 size = Vector2(15, 16)
@@ -88,6 +88,7 @@ animations = [{
 }]
 
 [node name="player" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_vokph")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

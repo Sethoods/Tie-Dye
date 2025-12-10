@@ -19,7 +19,7 @@ var roll_accel : float = 0.0
 @export var proj_scene = preload("res://scenes/paper.tscn")
 var shooting : bool = false
 
-func animate(delta: float) -> void:
+func animate(_delta: float) -> void:
 	if velocity.x < 0:
 		$AnimatedSprite2D.flip_h = true
 	else:
@@ -36,7 +36,7 @@ func animate(delta: float) -> void:
 			$AnimatedSprite2D.play("jump")
 	$AnimatedSprite2D.speed_scale = 1 + (accel-1)
 
-func shoot(delta: float):
+func shoot(_delta: float):
 	var player_proj = proj_scene.instantiate()
 	player_proj.player = self
 	get_parent().add_child(player_proj)
