@@ -21,11 +21,11 @@ position = Vector2(6, 1)
 [node name="player" parent="." instance=ExtResource("2_ihyw0")]
 position = Vector2(19, -47)
 
-[node name="boksy" parent="." instance=ExtResource("5_51dsx")]
+[node name="boksy" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
 position = Vector2(130, 26)
 
-[node name="boksy2" parent="." instance=ExtResource("5_51dsx")]
+[node name="boksy2" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
 position = Vector2(-11, 163)
 
-[node name="boksy3" parent="." instance=ExtResource("5_51dsx")]
+[node name="boksy3" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
 position = Vector2(1107, -927)

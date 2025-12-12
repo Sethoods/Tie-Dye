@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://d32tobrlt6vxl"]
+[gd_scene load_steps=8 format=3 uid="uid://d32tobrlt6vxl"]
 
 [ext_resource type="Texture2D" uid="uid://dyjwr73f6073h" path="res://art/test enem.svg" id="1_ja1ip"]
 [ext_resource type="Script" uid="uid://bgim08b6pcpp3" path="res://scripts/boksy.gd" id="1_u7pnd"]
@@ -22,6 +22,9 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u7pnd"]
 radius = 13.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_llj3d"]
+size = Vector2(30, 26)
+
 [node name="boksy" type="CharacterBody2D"]
 collision_layer = 4
 script = ExtResource("1_u7pnd")
@@ -30,9 +33,19 @@ script = ExtResource("1_u7pnd")
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_llj3d")
 
-[node name="CollisionPolygon2D" type="CollisionShape2D" parent="."]
+[node name="GroundCollision" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_u7pnd")
 
 [node name="RayCastForward" type="RayCast2D" parent="."]
 target_position = Vector2(-20, 0)
 script = ExtResource("3_llj3d")
+
+[node name="EvP collision" type="Area2D" parent="." groups=["Enemy Hitboxes"]]
+collision_layer = 4
+collision_mask = 6
+
+[node name="Unique" type="CollisionShape2D" parent="EvP collision"]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_llj3d")
+
+[connection signal="area_entered" from="EvP collision" to="." method="_on_ev_p_collision_area_entered"]

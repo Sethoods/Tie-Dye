@@ -42,6 +42,27 @@ func shoot(_delta: float):
 	get_parent().add_child(player_proj)
 	player_proj.global_position = $Marker2D.global_position
 
+func _on_pv_e_collision_area_entered(area: Area2D) -> void:
+	if not area.is_in_group("Enemy Hitboxes"):
+		return
+	
+	var pshape : Shape2D = $"PvE collision/CollisionShape2D".shape
+	var enemshape : Shape2D= area.get_node("Unique").shape
+		
+	var enem_top : float = global_position.y - enemshape.size.y / 2
+	var player_bottom: float = area.global_position.y - (pshape.height + pshape.radius * 2) / 2
+		
+	if not rolling:
+		if player_bottom > enem_top:
+			velocity.y = -300
+			print("YES!")
+		else:
+			velocity += Vector2(-direction*250*((accel+1)/1.5), -300)
+			accel = 0
+			print("ouch")
+	else:
+		print("slide")
+
 func _physics_process(delta: float) -> void:
 	floor_snap_length = 30 if rolling else 5
 	floor_max_angle = PI/2.1

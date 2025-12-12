@@ -8,9 +8,9 @@ var player
 
 func _ready() -> void:
 	if player.direction >= 0:
-		base_velocity = Vector2(250, -150)
+		base_velocity = Vector2(250, -100)
 	else:
-		base_velocity = Vector2(-250, -150)
+		base_velocity = Vector2(-250, -100)
 	velocity += player.velocity + base_velocity
 	print(velocity)
 	
