@@ -1,11 +1,11 @@
 extends CharacterBody2D
 
 
-const SPEED = 125.0
+const SPEED = 75.0
 const JUMP_VELOCITY = -400.0
 
 const MIN_ACCEL = 1
-const MAX_ACCEL = 3
+const MAX_ACCEL = 6
 const RATE_GROWTH_ACCEL = 0.5
 
 var direction := 0.0
@@ -34,7 +34,7 @@ func animate(_delta: float) -> void:
 				$AnimatedSprite2D.play("move")
 		else:
 			$AnimatedSprite2D.play("jump")
-	$AnimatedSprite2D.speed_scale = 1 + (accel-1)
+	$AnimatedSprite2D.speed_scale = 1 + (accel-1.5)
 
 func shoot(_delta: float):
 	var player_proj = proj_scene.instantiate()
@@ -100,7 +100,7 @@ func _physics_process(delta: float) -> void:
 		
 		
 	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY-((accel-1)*30)
+		velocity.y = JUMP_VELOCITY-((accel-1)*7.5)
 		velocity.x = velocity.x
 		rolling = false
 		
