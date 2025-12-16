@@ -17,7 +17,7 @@ func _physics_process(delta: float) -> void:
 		
 		var ahead_cell = tilemap.local_to_map(global_position + Vector2(direction * 8, 0))
 
-		for i in range(0,3):
+		for i in range(0,4):
 				if tilemap.get_cell_source_id(ahead_cell + Vector2i(0, i)) != -1:
 					counter = true
 					#print(str(counter) + ", air below infront")
@@ -45,7 +45,7 @@ func _on_ev_p_collision_area_entered(area: Area2D) -> void:
 			
 	print("collided with", area)
 	var enemshape : Shape2D=  $"EvP collision/Unique".shape
-	var pshape : Shape2D =area.get_node("CollisionShape2D").shape
+	var pshape : Shape2D =area.get_node("Collision normal").shape
 		
 	var enem_top : float = global_position.y - enemshape.size.y / 2
 	var player_bottom: float = area.global_position.y + (pshape.height + pshape.radius * 2) / 2

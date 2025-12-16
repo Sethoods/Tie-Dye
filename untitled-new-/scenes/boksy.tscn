@@ -1,18 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://d32tobrlt6vxl"]
+[gd_scene load_steps=7 format=3 uid="uid://d32tobrlt6vxl"]
 
 [ext_resource type="Texture2D" uid="uid://dyjwr73f6073h" path="res://art/test enem.svg" id="1_ja1ip"]
 [ext_resource type="Script" uid="uid://bgim08b6pcpp3" path="res://scripts/boksy.gd" id="1_u7pnd"]
 [ext_resource type="Script" uid="uid://5i4evj51e732" path="res://scripts/ray_cast_forward.gd" id="3_llj3d"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_u7pnd"]
-atlas = ExtResource("1_ja1ip")
-region = Rect2(0, 0, 32, 32)
-
 [sub_resource type="SpriteFrames" id="SpriteFrames_llj3d"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_u7pnd")
+"texture": ExtResource("1_ja1ip")
 }],
 "loop": true,
 "name": &"default",
@@ -20,10 +16,11 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u7pnd"]
-radius = 13.0
+radius = 9.0
+height = 20.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_llj3d"]
-size = Vector2(30, 26)
+size = Vector2(20, 18)
 
 [node name="boksy" type="CharacterBody2D"]
 collision_layer = 4
@@ -45,7 +42,7 @@ collision_layer = 4
 collision_mask = 6
 
 [node name="Unique" type="CollisionShape2D" parent="EvP collision"]
-position = Vector2(0, -3)
+position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_llj3d")
 
 [connection signal="area_entered" from="EvP collision" to="." method="_on_ev_p_collision_area_entered"]

@@ -19,6 +19,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:	
 	velocity.y += gravity/2 * delta
 	position += velocity * delta
+	rotation += 20 * delta
 
 
 func _on_timer_timeout() -> void:

@@ -46,7 +46,7 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 	if not area.is_in_group("Enemy Hitboxes"):
 		return
 	
-	var pshape : Shape2D = $"PvE collision/CollisionShape2D".shape
+	var pshape : Shape2D = $"PvE collision/Collision normal".shape
 	var enemshape : Shape2D= area.get_node("Unique").shape
 		
 	var enem_top : float = global_position.y - enemshape.size.y / 2
@@ -63,19 +63,20 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 	else:
 		print("slide")
 
+func _input(event: InputEvent) -> void:
+	if event:
+		pass
+
 func _physics_process(delta: float) -> void:
 	floor_snap_length = 30 if rolling else 5
 	floor_max_angle = PI/2.1
+	
+	#var recent_input := 
 	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		velocity.x -= velocity.x/10*delta
-
-	#if Input.is_action_pressed("accelerate"):
-	#	accel += RATE_GROWTH_ACCEL*delta
-	#else:
-	#	accel = move_toward(accel, 0, RATE_GROWTH_ACCEL*100*delta)
 
 	accel = clamp(accel, MIN_ACCEL, MAX_ACCEL)		
 	# Get the input direction and handle the movement/deceleration.
