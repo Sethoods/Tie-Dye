@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://647c0y7gonkm"]
+
+[ext_resource type="Script" uid="uid://bdbc0wb5dpv76" path="res://scripts/playerproj.gd" id="1_7yes2"]
+[ext_resource type="Texture2D" uid="uid://rkglub7hv82c" path="res://art/TieDye Projectiles V1.png" id="2_l2ujw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1hqmn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xkrmc"]
+atlas = ExtResource("2_l2ujw")
+region = Rect2(0, 0, 900, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7yes2"]
+size = Vector2(66.26899, 12.121213)
+
+[node name="PlayerProj" type="CharacterBody2D"]
+scale = Vector2(0.25, 0.25)
+collision_layer = 8
+collision_mask = 5
+script = ExtResource("1_7yes2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("RectangleShape2D_1hqmn")
+
+[node name="ProjSprite" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_xkrmc")
+
+[node name="Overlay" type="Sprite2D" parent="."]
+visible = false
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0.81279886, 2.2175033)
+rotation = 2.3561945
+scale = Vector2(0.9999999, 0.9999999)
+shape = SubResource("RectangleShape2D_7yes2")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

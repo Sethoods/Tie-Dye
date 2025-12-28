@@ -37,9 +37,22 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 
+func player_collided(collision: String) -> void:
+	pass
+	if collision == "top":
+		print("stunned ", self.name)
+		velocity = Vector2(0, 100)
+		stunned = true
+		stun_timer = .178
+	elif collision == "face":
+		direction *= -1
+	elif collision == "slide":
+		print("slid into", self.name)
+		velocity = Vector2(0, -500)
+		stunned = true
+		stun_timer = 1.22
 
-
-func _on_ev_p_collision_area_entered(area: Area2D) -> void:
+"""func _on_ev_p_collision_area_entered(area: Area2D) -> void:
 	if not area.is_in_group("friendly hitbox"):
 			return
 			
@@ -48,7 +61,7 @@ func _on_ev_p_collision_area_entered(area: Area2D) -> void:
 	var pshape : Shape2D =area.get_node("Collision normal").shape
 		
 	var enem_top : float = global_position.y - enemshape.size.y / 2
-	var player_bottom: float = area.global_position.y + (pshape.height + pshape.radius * 2) / 2
+	var player_bottom: float = area.global_position.y + pshape.size.y / 2#(pshape.height + pshape.radius * 2) / 2
 	
 	if enem_top < player_bottom:
 		print("stunned ", self.name)
@@ -56,6 +69,6 @@ func _on_ev_p_collision_area_entered(area: Area2D) -> void:
 		stunned = true
 		stun_timer = 3.0
 	else:
-		direction *= -1
+		direction *= -1"""
 			
 	

@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://daclctlb3ovte"]
+
+[ext_resource type="Script" uid="uid://yerf5mxns22n" path="res://scripts/paint.gd" id="1_vhmiv"]
+[ext_resource type="Texture2D" uid="uid://c7wc5bukyxdep" path="res://art/paintballs.svg" id="2_yiwe3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8nnhm"]
+atlas = ExtResource("2_yiwe3")
+region = Rect2(0, 0, 320, 32)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4bkfw"]
+radius = 16.03122
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jt85c"]
+radius = 16.492422
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+scale = Vector2(0.25, 0.25)
+collision_layer = 0
+script = ExtResource("1_vhmiv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_8nnhm")
+
+[node name="ground collision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_4bkfw")
+
+[node name="Area2D" type="Area2D" parent="." groups=["Paintballs"]]
+collision_layer = 2
+collision_mask = 2
+
+[node name="player collision" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_jt85c")
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://drjrd6rvhldqr"
-path="res://.godot/imported/TILE.png-ee091f1ecd3d7b9a07915b261a2eeb83.ctex"
+uid="uid://dch2mqi2a84hp"
+path="res://.godot/imported/TieDye Spritesheets V1.png-4d3724e06b0e2bd0e4854419e6b47387.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/TILE.png"
-dest_files=["res://.godot/imported/TILE.png-ee091f1ecd3d7b9a07915b261a2eeb83.ctex"]
+source_file="res://art/TieDye Spritesheets V1.png"
+dest_files=["res://.godot/imported/TieDye Spritesheets V1.png-4d3724e06b0e2bd0e4854419e6b47387.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bpre6mmu2f3tm"
-path="res://.godot/imported/TILE2.png-88a61d8ba4cd67520b53b251830f78b6.ctex"
+uid="uid://c7wc5bukyxdep"
+path="res://.godot/imported/paintballs.svg-9173db53ebb17c06dc6516ffc21c6522.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/TILE2.png"
-dest_files=["res://.godot/imported/TILE2.png-88a61d8ba4cd67520b53b251830f78b6.ctex"]
+source_file="res://art/paintballs.svg"
+dest_files=["res://.godot/imported/paintballs.svg-9173db53ebb17c06dc6516ffc21c6522.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false
