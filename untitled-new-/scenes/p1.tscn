@@ -257,7 +257,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_mlw80")
 }],
-"loop": false,
+"loop": true,
 "name": &"movethrow",
 "speed": 12.0
 }, {
@@ -380,9 +380,8 @@ material = SubResource("ShaderMaterial_m01ht")
 position = Vector2(0, -0.25000012)
 scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"duck"
+animation = &"movethrow"
 autoplay = "default"
-frame_progress = 0.37196758
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(10, -5)

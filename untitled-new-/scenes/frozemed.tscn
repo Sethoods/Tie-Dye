@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://cl1ugtq6tyfj0"]
+
+[ext_resource type="Script" uid="uid://dipveaxy3kx8k" path="res://scenes/frozemed.gd" id="1_hjprr"]
+[ext_resource type="Texture2D" uid="uid://dv6hw70nm1hyp" path="res://art/frozen ph.png" id="2_gnv2c"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_llj3d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_gnv2c")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u7pnd"]
+radius = 9.0
+height = 20.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_llj3d"]
+
+[node name="frozemed" type="CharacterBody2D"]
+collision_layer = 4
+script = ExtResource("1_hjprr")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_llj3d")
+
+[node name="GroundCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_u7pnd")
+
+[node name="EvP collision" type="Area2D" parent="." groups=["Ice Hitboxes"]]
+collision_layer = 4
+collision_mask = 6
+
+[node name="Unique" type="CollisionShape2D" parent="EvP collision"]
+shape = SubResource("RectangleShape2D_llj3d")
+
+[connection signal="area_entered" from="EvP collision" to="." method="_on_ev_p_collision_area_entered"]

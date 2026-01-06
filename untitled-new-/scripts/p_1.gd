@@ -193,7 +193,7 @@ func _physics_process(delta: float) -> void:
 	
 	if is_hurt:
 		hurt_timer += delta
-		if hurt_timer > 3:
+		if hurt_timer > 1:
 			hurt_timer = 0
 			is_hurt = false
 	#var recent_input := 
@@ -217,6 +217,8 @@ func _physics_process(delta: float) -> void:
 		if not rolling:
 			var max_movement_speed = SPEED * accel
 			velocity.x = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED * 10) * delta) 
+			if is_crouching:
+				velocity.x /= 1.5
 			accel += RATE_GROWTH_ACCEL*delta*2
 		else:
 			if velocity.x < 0.1 or velocity.x > -0.1:
@@ -231,7 +233,7 @@ func _physics_process(delta: float) -> void:
 		accel = move_toward(accel, 0, RATE_GROWTH_ACCEL*100*delta)
 		
 		
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	if Input.is_action_just_pressed("jump") and is_on_floor() and not is_crouching:
 		velocity.y = JUMP_VELOCITY-((accel-1)*7.5)
 		velocity.x = velocity.x
 		rolling = false
@@ -248,15 +250,18 @@ func _physics_process(delta: float) -> void:
 			shooting = false
 			shoot_timer = 0
 	
-	if Input.is_action_just_pressed("shoot") and not rolling and shoot_timer <= 0 and not is_hurt:
+	if Input.is_action_just_pressed("shoot") and not rolling and shoot_timer <= 0 and not is_hurt and not has_djumped and not is_crouching:
 		var current_dye = [primary_dye, secondary_dye]
 		match current_dye:
-			[0, 0], [1, 0], [3,0]:
+			[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0], [9,0]:
 				SHOOT_DELAY = 0.25
 				$ProjDelay.wait_time = SHOOT_DELAY*0.03
 			[2, 0]:
 				SHOOT_DELAY = 1
 				$ProjDelay.wait_time = 0.001
+			[10, 0]:
+				SHOOT_DELAY = .5
+				$ProjDelay.wait_time = SHOOT_DELAY*0.03
 		shooting = true
 		if primary_dye == DYES["COMBAT"] and secondary_dye == DYES["NULL"]:
 			$AnimatedSprite2D.play("spinthrow")
@@ -271,7 +276,7 @@ func _physics_process(delta: float) -> void:
 		
 	if Input.is_action_just_pressed("crouch") and is_on_floor() and velocity.x != 0:
 		rolling = true
-	elif Input.is_action_just_pressed("crouch"): 
+	elif Input.is_action_pressed("crouch") and not shooting and not has_djumped and not rolling: 
 		is_crouching = true
 		$AnimatedSprite2D.play("duck")
 	else:

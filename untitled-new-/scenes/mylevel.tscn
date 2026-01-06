@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://b5lmxcbpp3eaa"]
+[gd_scene load_steps=8 format=3 uid="uid://b5lmxcbpp3eaa"]
 
 [ext_resource type="Script" uid="uid://bdgfrks46g5gq" path="res://scripts/mylevel.gd" id="1_ihyw0"]
 [ext_resource type="PackedScene" uid="uid://dkiwy771wd18a" path="res://scenes/terrain1.tscn" id="1_ybe71"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c788sfrv8kllu" path="res://scenes/p1.tscn" id="2_ihyw0"]
 [ext_resource type="PackedScene" uid="uid://d32tobrlt6vxl" path="res://scenes/boksy.tscn" id="5_51dsx"]
 [ext_resource type="PackedScene" uid="uid://daclctlb3ovte" path="res://scenes/paint.tscn" id="6_dtrk2"]
+[ext_resource type="PackedScene" uid="uid://cl1ugtq6tyfj0" path="res://scenes/frozemed.tscn" id="7_lbssl"]
 
 [node name="mylevel" type="Node2D"]
 script = ExtResource("1_ihyw0")
@@ -42,3 +43,9 @@ position = Vector2(79, -354)
 
 [node name="CharacterBody2D2" parent="." instance=ExtResource("6_dtrk2")]
 position = Vector2(-527, 21)
+
+[node name="frozemed" parent="." instance=ExtResource("7_lbssl")]
+position = Vector2(646, -611)
+
+[node name="frozemed2" parent="." instance=ExtResource("7_lbssl")]
+position = Vector2(-1046, -414)

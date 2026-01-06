@@ -10,6 +10,7 @@ var player
 var id
 var last_normal = Vector2.ZERO
 var spin_timer := 0.0
+var angle := 0.0 
 var is_burning = false
 var is_gravity = true
 
@@ -39,7 +40,7 @@ func _ready() -> void:
 	#print(id)
 
 	base_velocity = Vector2(150*player.proj_dir[0], -200*(player.proj_dir[1]))
-	print(base_velocity)
+	#print(base_velocity)
 	velocity.x += base_velocity.x + player.velocity.x
 	velocity.y += base_velocity.y
 	
@@ -55,7 +56,27 @@ func _ready() -> void:
 			velocity.x /= 2
 			saved_velocity = velocity
 			$Timer.stop()
-			$Timer.start(7)			
+			$Timer.start(7)
+		"30":
+			is_gravity = false
+			velocity.x *= 2
+			if player.proj_dir[0] == 0:
+				velocity.x = 200
+		"40":
+			is_gravity = false
+			#velocity.y += 20
+			if player.proj_dir[0] == 0:
+				velocity.x = 200
+			$Timer.stop()
+			$Timer.start(6)
+		"50":
+			is_gravity = false
+			velocity /= 2
+			$Timer.stop()
+			$Timer.start(5)
+		"80":
+			$PaperRay.enabled = true
+			$PaperRay.target_position = Vector2(velocity.x/30, velocity.y/30)
 		"100":
 			$Metal.enabled = true
 			$PaperRay.enabled = true
@@ -65,6 +86,8 @@ func _ready() -> void:
 			$Timer.stop()
 			$Timer.start(6)
 			is_gravity = false
+		_:
+			pass
 	
 	$ProjSprite.region_enabled = true
 	var regx = 60*player.primary_dye
@@ -79,45 +102,75 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:	
-	if id == "10":
-		pass
-	elif id == "20":
-		spin_timer += delta
-		if $Timer.time_left >6:
-			var osc = 12*cos(16*(spin_timer))
-			position.y = player.global_position.y - 2
-			position.x = player.global_position.x + osc
-			is_gravity = false
-		else:
-			if saved_velocity != Vector2.ZERO:
-				is_gravity = true
-				velocity = saved_velocity
-				velocity.x += player.velocity.x
-				saved_velocity = Vector2.ZERO
-
-	elif id == "100":
-		var normal := Vector2.ZERO
-				
-			#print([snappedf(normal.x, 0.01), snappedf(normal.y, 0.01)]," ",[snappedf(tangent.x, 0.01) ,snappedf(tangent.y,0.01)]," ", proj_speed)				
-		if $Metal.is_colliding():
-			normal = $Metal.get_collision_normal()
-			if $PaperRay.is_colliding():
-				normal = $PaperRay.get_collision_normal()	
-				var proj_tangent = apply_normal(normal, delta, $PaperRay)
-				
-				var proj_speed = velocity.length()		
-				velocity = proj_tangent*proj_speed
+	var motion_origin = position
+	match id:
+		"20":
+			spin_timer += delta
+			if $Timer.time_left >6:
+				var osc = 12*cos(20*(spin_timer))
+				position.y = player.global_position.y - 2
+				position.x = player.global_position.x + osc
+				is_gravity = false
 			else:
-				var proj_tangent = apply_normal(normal, delta, $Metal)
-				
-				var proj_speed = velocity.length()		
-				velocity = proj_tangent*proj_speed
-		else:
-			$Metal.target_position = Vector2(velocity.x/50, velocity.y/50)
+				if saved_velocity != Vector2.ZERO:
+					is_gravity = true
+					velocity = saved_velocity
+					velocity.x += player.velocity.x
+					saved_velocity = Vector2.ZERO
+		"30":
+			spin_timer += delta
+			var osc = 3*cos(100*(spin_timer))
+			position.y += osc
+		"40":
+			if base_velocity.x >= 0:
+				velocity.x -= delta*200
+			else:
+				velocity.x += delta*200
+			if base_velocity.x/velocity.x > 0:
+				velocity.y -= delta*60
+			else:
+				velocity.y += delta*70
+		"50":
+			spin_timer += delta
+			angle += delta * 20
+			var spiral_distance : float = delta * 625
+			position.x = motion_origin.x + spiral_distance * cos(angle)
+			position.y = motion_origin.y + spiral_distance * sin(angle)
+			motion_origin.x += velocity.x*delta**2
+		"80":
+			var normal := Vector2.ZERO
+			$PaperRay.target_position = Vector2(velocity.x/50, velocity.y/50)
+			if $PaperRay.is_colliding():
+				normal = $PaperRay.get_collision_normal()
+				var speed = velocity.length()
+				velocity = normal * speed
+		"100":
+			var normal := Vector2.ZERO
+					
+				#print([snappedf(normal.x, 0.01), snappedf(normal.y, 0.01)]," ",[snappedf(tangent.x, 0.01) ,snappedf(tangent.y,0.01)]," ", proj_speed)				
+			if $Metal.is_colliding():
+				normal = $Metal.get_collision_normal()
+				if $PaperRay.is_colliding():
+					normal = $PaperRay.get_collision_normal()	
+					var proj_tangent = apply_normal(normal, delta, $PaperRay)
+					
+					var proj_speed = velocity.length()		
+					velocity = proj_tangent*proj_speed
+				else:
+					var proj_tangent = apply_normal(normal, delta, $Metal)
+					
+					var proj_speed = velocity.length()		
+					velocity = proj_tangent*proj_speed
+			else:
+				$Metal.target_position = Vector2(velocity.x/50, velocity.y/50)
+		_:
+			pass
 			
 	if is_gravity:
 		velocity.y += 250  * delta
-		rotation += 20 * delta
+	if is_gravity or id == "10" or id == "40":
+		pass
+	$ProjSprite.rotation_degrees += 200*delta
 	position += velocity * delta
 
 
@@ -128,7 +181,14 @@ func _on_timer_timeout() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20", "100":
+			"20","30","50","80", "100":
 				return
 			_:
 				queue_free()
+
+
+func _on_area_entered(area: Area2D) -> void:
+	if area.is_in_group("Enemy Hitboxes"):
+		if id != "30":
+			queue_free()
+		area.get_parent().proj_collided(id)

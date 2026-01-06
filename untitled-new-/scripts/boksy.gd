@@ -31,7 +31,7 @@ func _physics_process(delta: float) -> void:
 	elif stunned:
 		stun_timer -= delta
 		if stun_timer <= 0:
-			print(self, "no longer stun")
+			#print(self, "no longer stun")
 			stunned = false
 			stun_timer = 0.5
 	
@@ -40,7 +40,7 @@ func _physics_process(delta: float) -> void:
 func player_collided(collision: String) -> void:
 	pass
 	if collision == "top":
-		print("stunned ", self.name)
+		#print("stunned ", self.name)
 		velocity = Vector2(0, 100)
 		stunned = true
 		stun_timer = .347
@@ -48,10 +48,19 @@ func player_collided(collision: String) -> void:
 		direction *= -1
 		scale.x *= -1
 	elif collision == "slide":
-		print("slid into", self.name)
+		#print("slid into", self.name)
 		velocity = Vector2(0, -500)
 		stunned = true
 		stun_timer = 1.22
+	
+func proj_collided(id: String) -> void:
+	velocity.x *= 0.43
+	velocity.y = -200
+	stunned = true
+	stun_timer = .5
+	match id:
+		_:
+			pass
 
 """func _on_ev_p_collision_area_entered(area: Area2D) -> void:
 	if not area.is_in_group("friendly hitbox"):
