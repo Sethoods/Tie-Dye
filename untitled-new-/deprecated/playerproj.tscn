@@ -1,12 +1,12 @@
 [gd_scene load_steps=6 format=3 uid="uid://647c0y7gonkm"]
 
-[ext_resource type="Script" uid="uid://bdbc0wb5dpv76" path="res://scripts/playerproj.gd" id="1_7yes2"]
-[ext_resource type="Texture2D" uid="uid://rkglub7hv82c" path="res://art/TieDye Projectiles V1.png" id="2_l2ujw"]
+[ext_resource type="Script" uid="uid://bdbc0wb5dpv76" path="res://deprecated/playerproj.gd" id="1_ve5fm"]
+[ext_resource type="Texture2D" uid="uid://rkglub7hv82c" path="res://art/TieDye Projectiles V1.png" id="2_vpjfm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1hqmn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xkrmc"]
-atlas = ExtResource("2_l2ujw")
+atlas = ExtResource("2_vpjfm")
 region = Rect2(0, 0, 900, 240)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7yes2"]
@@ -16,7 +16,7 @@ size = Vector2(66.26899, 12.121213)
 scale = Vector2(0.25, 0.25)
 collision_layer = 8
 collision_mask = 5
-script = ExtResource("1_7yes2")
+script = ExtResource("1_ve5fm")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(0.99999994, 0.99999994)

@@ -18,7 +18,7 @@ func _physics_process(delta: float) -> void:
 		var ahead_cell = tilemap.local_to_map(global_position + Vector2(direction * 8, 0))
 
 		for i in range(0,4):
-				if tilemap.get_cell_source_id(ahead_cell + Vector2i(0, i)) != -1:
+				if tilemap.get_cell_source_id(ahead_cell + Vector2i(0, i)) != -1 and not $RayCastForward.is_colliding():
 					counter = true
 					#print(str(counter) + ", air below infront")
 					break
@@ -43,9 +43,10 @@ func player_collided(collision: String) -> void:
 		print("stunned ", self.name)
 		velocity = Vector2(0, 100)
 		stunned = true
-		stun_timer = .178
+		stun_timer = .347
 	elif collision == "face":
 		direction *= -1
+		scale.x *= -1
 	elif collision == "slide":
 		print("slid into", self.name)
 		velocity = Vector2(0, -500)

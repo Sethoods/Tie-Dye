@@ -4,7 +4,7 @@ extends RayCast2D
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	position.x = 8
-	position.y = 0
+	position.y = 5
 	target_position = Vector2(8, -21)
 
 

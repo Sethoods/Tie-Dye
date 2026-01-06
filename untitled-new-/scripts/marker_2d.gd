@@ -8,7 +8,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if get_parent().direction >= 0:
-		pos_offset = Vector2(1, 0)
+		pos_offset = Vector2(3, 0)
 	else:
-		pos_offset = Vector2(-1, 0)
+		pos_offset = Vector2(0, 0)
 	position = pos_offset

@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3 uid="uid://mesvu7udmqxi"]
+
+[ext_resource type="Script" uid="uid://bn3cslrt5aiwd" path="res://scripts/proj_scripts/paper.gd" id="1_vas6c"]
+[ext_resource type="Texture2D" uid="uid://rkglub7hv82c" path="res://art/TieDye Projectiles V1.png" id="2_cbjgq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nwabi"]
+atlas = ExtResource("2_cbjgq")
+region = Rect2(0, 0, 900, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vas6c"]
+size = Vector2(5.1819806, 19)
+
+[node name="paper" type="Area2D"]
+script = ExtResource("1_vas6c")
+
+[node name="ProjSprite" type="Sprite2D" parent="."]
+texture_filter = 1
+rotation = -0.7853982
+scale = Vector2(0.25, 0.25)
+texture = SubResource("AtlasTexture_nwabi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_vas6c")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="Metal" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(-10, 0)
+
+[node name="PaperRay" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(0, 23)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

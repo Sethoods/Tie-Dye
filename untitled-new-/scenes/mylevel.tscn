@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bdgfrks46g5gq" path="res://scripts/mylevel.gd" id="1_ihyw0"]
 [ext_resource type="PackedScene" uid="uid://dkiwy771wd18a" path="res://scenes/terrain1.tscn" id="1_ybe71"]
-[ext_resource type="Texture2D" uid="uid://b7bks2w6bvs6f" path="res://art/test bg.svg" id="2_hod4y"]
+[ext_resource type="Texture2D" uid="uid://bspxivwgoryxv" path="res://art/placeholder bg.jpg" id="2_dtrk2"]
 [ext_resource type="PackedScene" uid="uid://c788sfrv8kllu" path="res://scenes/p1.tscn" id="2_ihyw0"]
 [ext_resource type="PackedScene" uid="uid://d32tobrlt6vxl" path="res://scenes/boksy.tscn" id="5_51dsx"]
 [ext_resource type="PackedScene" uid="uid://daclctlb3ovte" path="res://scenes/paint.tscn" id="6_dtrk2"]
@@ -11,16 +11,16 @@
 script = ExtResource("1_ihyw0")
 
 [node name="background" type="Sprite2D" parent="."]
-position = Vector2(-3.05176e-05, 0)
-scale = Vector2(5.5425, 4.86667)
-texture = ExtResource("2_hod4y")
+position = Vector2(54.500134, -400.49997)
+scale = Vector2(12.969111, 12.427835)
+texture = ExtResource("2_dtrk2")
 
 [node name="Level_test" parent="." instance=ExtResource("1_ybe71")]
 unique_name_in_owner = true
 position = Vector2(6, 1)
 
 [node name="player" parent="." instance=ExtResource("2_ihyw0")]
-position = Vector2(19, -47)
+position = Vector2(-526, 51)
 
 [node name="boksy" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
 position = Vector2(130, 26)
@@ -39,3 +39,6 @@ position = Vector2(-800, -395)
 
 [node name="boksy5" parent="." instance=ExtResource("5_51dsx")]
 position = Vector2(79, -354)
+
+[node name="CharacterBody2D2" parent="." instance=ExtResource("6_dtrk2")]
+position = Vector2(-527, 21)

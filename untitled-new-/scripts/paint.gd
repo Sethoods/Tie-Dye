@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-var dye_type = 9#randi()%10 +1
+var dye_type = 1#randi()%10 
 const reglength = 32
 var regx = 0
 
