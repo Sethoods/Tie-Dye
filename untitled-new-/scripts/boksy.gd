@@ -3,23 +3,53 @@ extends CharacterBody2D
 var speed: float = 100
 var stun_timer : float = 0.0
 var direction: int = 1
+var health : float = 10
 var counter:  bool = false
 var stunned := false
 var chills : int = 0
+var burndedness: int = 0
+var shocks : int = 0
 @onready var tilemap: TileMapLayer = get_node("/root/mylevel/Level_test")
 @export var frozen = preload("res://scenes/frozemed.tscn")
+var time_extant = 0
+
+func shock(numero: int):
+	if numero > 3:
+		return
+	shocks = numero
+	$AOE.set_deferred("monitoring", true)
+	await get_tree().create_timer(0.2).timeout
+	$AOE.set_deferred("monitoring", false)
+
+
 
 func freeze():
 	if chills > 2:
 		var new_frozen = frozen.instantiate()
 		get_parent().add_child(new_frozen)
 		new_frozen.position = position
-		print("ran this function ", new_frozen.global_position)
 		queue_free()
 	else:
 		chills += 1
+		
+func burn():
+	burndedness += 1
+	print("ok it started burning")
+	await get_tree().create_timer(8).timeout
+	burndedness = 0
+	print("ok it stopped burning")
+	
+func die():
+	print("This enemy would have died right now.")
+	health = 10
+	stunned = true
+	stun_timer = 50
+	velocity = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
+	time_extant += 1
+	if health <= 0:
+		die()
 	counter = false
 	floor_max_angle=PI/2.1
 
@@ -47,6 +77,15 @@ func _physics_process(delta: float) -> void:
 			stunned = false
 			stun_timer = 0.5
 	
+					
+	if burndedness > 0:
+		$Sprite2D.visible = true
+		velocity.x += delta*200*direction
+		if fmod(time_extant, 5) == 0:
+			health -= 0.5
+			print("burnt")
+	else:
+		$Sprite2D.visible = false
 	move_and_slide()
 
 func player_collided(collision: String) -> void:
@@ -67,13 +106,38 @@ func player_collided(collision: String) -> void:
 
 func proj_collided(id: String) -> void:
 	stunned = true
-	stun_timer = .5
+	stun_timer = .25
 	match id:
-		"20":
-			velocity.x -= 2*velocity.x
+		"10":
+			velocity.x *= -0.43
 			velocity.y = -200
+			health -= 2
+		"20":
+			velocity.x -= 2*velocity.length()
+			velocity.y = -400
+			health -= 9
+		"30":
+			health -= 1
+			stun_timer += 1
+		"40":
+			velocity.x *= -0.43
+			velocity.y = -200
+			health -= 0.5
 		"50":
-			pass
+			if is_on_floor():
+				velocity.y = -500
+			else:
+				velocity.y = 500
+			health -= 1	
 		_:
 			velocity.x *= -0.43
 			velocity.y = -200
+
+
+func _on_aoe_area_entered(area: Area2D) -> void:
+	if area.is_in_group("Enemy Hitboxes"):
+		var boksy := area.get_parent()
+		boksy.shock(shocks + 1)
+		print("chain ", boksy.name)
+		$AOE.set_deferred("monitoring", false)
+		

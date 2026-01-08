@@ -42,6 +42,7 @@ var secondary_dye : int = DYES["NULL"]
 
 var is_hurt : bool = false
 var hurt_timer : float = 0.0
+var health : int = 0
 
 var is_crouching : bool = false
 
@@ -155,8 +156,9 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 				print("YES!")
 				area.get_parent().player_collided("top")
 			else:
-				velocity += Vector2(-direction*250*min(2, max(1, accel)), -300)
-				accel = 0
+				velocity += Vector2(-direction*100*min(2, max(1, accel)), -50)
+				if not is_crouching:
+					accel = 0
 				print("ouch")
 				area.get_parent().player_collided("face")
 				is_hurt = true
@@ -216,7 +218,7 @@ func _physics_process(delta: float) -> void:
 	if direction and prev_dir and not is_hurt:
 		if not rolling:
 			var max_movement_speed = SPEED * accel
-			velocity.x = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED * 10) * delta) 
+			velocity.x = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED * 5) * delta) 
 			if is_crouching:
 				velocity.x /= 1.5
 			accel += RATE_GROWTH_ACCEL*delta*2
@@ -295,8 +297,8 @@ func _physics_process(delta: float) -> void:
 			tangent = -tangent
 		slope_dir = Vector2(0,1).project(tangent).normalized()
 		velocity +=  slope_dir * (200 * roll_accel) * delta
-	if not rolling:
-		roll_accel = move_toward(roll_accel, 0.0, 200 * delta)	
+	if not rolling and not direction:
+		roll_accel = move_toward(roll_accel, 0.0, 200 * delta)
 	
 	animate(delta)
 	move_and_slide()

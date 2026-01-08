@@ -322,7 +322,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"spinthrow",
-"speed": 12.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -380,7 +380,7 @@ material = SubResource("ShaderMaterial_m01ht")
 position = Vector2(0, -0.25000012)
 scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"movethrow"
+animation = &"spinthrow"
 autoplay = "default"
 
 [node name="Marker2D" type="Marker2D" parent="."]

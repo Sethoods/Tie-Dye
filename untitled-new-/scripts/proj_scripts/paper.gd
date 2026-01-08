@@ -11,7 +11,11 @@ var id
 var last_normal = Vector2.ZERO
 var spin_timer := 0.0
 var angle := 0.0 
+var can_spin = true
 var is_burning = false
+var is_freezing = false
+var is_shocking = false
+var is_healing = false
 var is_gravity = true
 @export var cluster = preload("res://scenes/paper.tscn")
 
@@ -46,7 +50,7 @@ func  child_proj():
 func _ready() -> void:
 	if id != "E0":
 		id = str(player.primary_dye) + str(player.secondary_dye)
-		print(id)
+		#print(id)
 		base_velocity = Vector2(150*player.proj_dir[0], -200*(player.proj_dir[1]))
 		#print(base_velocity)
 		velocity.x += base_velocity.x + player.velocity.x
@@ -64,6 +68,7 @@ func _ready() -> void:
 			if player.proj_dir[0] == 0:
 				velocity.x = 200
 		"20":
+			scale *= 2
 			velocity.y += -100
 			velocity.x /= 2
 			saved_velocity = velocity
@@ -71,6 +76,7 @@ func _ready() -> void:
 			$Timer.start(7)
 		"30":
 			is_gravity = false
+			is_shocking = true
 			velocity.x *= 2
 			if player.proj_dir[0] == 0:
 				velocity.x = 200
@@ -82,17 +88,23 @@ func _ready() -> void:
 				velocity.x = 200
 			$Timer.stop()
 			$Timer.start(6)
+			is_healing = true
 		"50":
 			is_gravity = false
 			velocity /= 2
 			$Timer.stop()
 			$Timer.start(5)
+		"60":
+			is_freezing = true
+			velocity.x *= 1.15
 		"70":
 			$Timer.stop()
 			$Timer.start(1)
 		"80":
 			$PaperRay.enabled = true
 			$PaperRay.target_position = Vector2(velocity.x/30, velocity.y/30)
+			$Timer.stop()
+			$Timer.start(15)
 		"90":
 			velocity.y += -100
 			velocity.x /= 2
@@ -135,19 +147,21 @@ func _physics_process(delta: float) -> void:
 		"20":
 			spin_timer += delta
 			if $Timer.time_left >6:
-				var osc = 12*cos(20*(spin_timer))
-				position.y = player.global_position.y - 2
+				can_spin = false
+				var osc = 12*cos(30*(spin_timer))
+				position.y = player.global_position.y - 10
 				position.x = player.global_position.x + osc
 				is_gravity = false
 			else:
 				if saved_velocity != Vector2.ZERO:
+					can_spin = true
 					is_gravity = true
 					velocity = saved_velocity
 					velocity.x += player.velocity.x
 					saved_velocity = Vector2.ZERO
 		"30":
 			spin_timer += delta
-			var osc = 15*cos(25*(spin_timer))
+			var osc = 15*cos(35*(spin_timer))
 			position.y += osc
 		"40":
 			if base_velocity.x >= 0:
@@ -157,7 +171,7 @@ func _physics_process(delta: float) -> void:
 			if base_velocity.x/velocity.x > 0:
 				velocity.y -= delta*60
 			else:
-				velocity.y += delta*70
+				velocity.y += delta*80
 		"50":
 			var motion_origin = position
 			spin_timer += delta
@@ -177,8 +191,8 @@ func _physics_process(delta: float) -> void:
 			spin_timer += delta * player.velocity.x
 			if $Timer.time_left >1:
 				angle += delta * 20
-				position.y = player.global_position.y + sin(angle) * 50
-				position.x = player.global_position.x + cos(angle) * 50
+				position.y = player.global_position.y + sin(angle) * (30 + abs(player.velocity.x)/5)
+				position.x = player.global_position.x + cos(angle) * (20 + abs(player.velocity.x)/3)
 				is_gravity = false
 			else:
 				if saved_velocity != Vector2.ZERO:
@@ -212,8 +226,9 @@ func _physics_process(delta: float) -> void:
 		velocity.y += 250  * delta
 	if is_gravity or id == "10" or id == "40":
 		pass
-	$ProjSprite.rotation_degrees += 2000*delta
-	$CollisionShape2D.rotation_degrees += 2000*delta
+	if can_spin:
+		$ProjSprite.rotation_degrees += 2000*delta
+		$CollisionShape2D.rotation_degrees += 2000*delta
 	position += velocity * delta
 
 func _on_timer_timeout() -> void:
@@ -234,24 +249,33 @@ func _on_body_entered(body: Node2D) -> void:
 				queue_free()
 			_:
 				queue_free()
+	if id == "80":
+		velocity.x *= randi_range(-2, 2)
+		velocity.y *= randi_range(-2, 2)
 
 
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy = area.get_parent() as CharacterBody2D
-		if not id == "30" or not id == "80":
-			print(id)
+		if not id == "30" and not id == "80":
+			#print(id+ " destroyed")
 			queue_free()
-		if id == "60":
+			if id == "20" or id == "90":
+				player.shooting = false
+				player.shoot_timer = 0
+		if is_freezing:
 			boksy.freeze()
 			queue_free()
+		if is_burning:
+			boksy.burn()
+		if is_shocking:
+			boksy.shock(0)
+
+		if is_healing:
+			player.health += boksy.health /4
 		if id == "70":
 			for  i in range(8):
-					child_proj()
-		if id == "80":
-			if velocity.y > boksy.velocity.y:
-				velocity.y *= -1
-			velocity.y *= -1
+					call_deferred("child_proj")
 			
 			
 		boksy.proj_collided(id)

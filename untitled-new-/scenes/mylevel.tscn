@@ -23,22 +23,22 @@ position = Vector2(6, 1)
 [node name="player" parent="." instance=ExtResource("2_ihyw0")]
 position = Vector2(-526, 51)
 
-[node name="boksy" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
+[node name="hillboksy" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
 position = Vector2(130, 26)
 
-[node name="boksy2" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
+[node name="floorboksy" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
 position = Vector2(-11, 163)
 
-[node name="boksy3" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
+[node name="mountainboksy" parent="." groups=["Enemy Hitboxes"] instance=ExtResource("5_51dsx")]
 position = Vector2(1135, -880)
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("6_dtrk2")]
 position = Vector2(-47, -93)
 
-[node name="boksy4" parent="." instance=ExtResource("5_51dsx")]
+[node name="plainboksy" parent="." instance=ExtResource("5_51dsx")]
 position = Vector2(-800, -395)
 
-[node name="boksy5" parent="." instance=ExtResource("5_51dsx")]
+[node name="lostboksy" parent="." instance=ExtResource("5_51dsx")]
 position = Vector2(79, -354)
 
 [node name="CharacterBody2D2" parent="." instance=ExtResource("6_dtrk2")]
@@ -52,3 +52,15 @@ position = Vector2(-1046, -414)
 
 [node name="CharacterBody2D3" parent="." instance=ExtResource("6_dtrk2")]
 position = Vector2(426, -879)
+
+[node name="CharacterBody2D4" parent="." instance=ExtResource("6_dtrk2")]
+position = Vector2(1157, -681)
+
+[node name="firstchain" parent="." instance=ExtResource("5_51dsx")]
+position = Vector2(424, 304)
+
+[node name="secondchain" parent="." instance=ExtResource("5_51dsx")]
+position = Vector2(342, 383)
+
+[node name="thirdchain" parent="." instance=ExtResource("5_51dsx")]
+position = Vector2(422, 463)

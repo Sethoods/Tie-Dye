@@ -13,7 +13,7 @@ radius = 16.03122
 [sub_resource type="CircleShape2D" id="CircleShape2D_jt85c"]
 radius = 16.492422
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="paintball" type="CharacterBody2D"]
 scale = Vector2(0.25, 0.25)
 collision_layer = 0
 script = ExtResource("1_vhmiv")
