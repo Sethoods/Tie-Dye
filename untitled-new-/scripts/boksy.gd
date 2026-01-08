@@ -5,7 +5,9 @@ var stun_timer : float = 0.0
 var direction: int = 1
 var counter:  bool = false
 var stunned := false
+var chills : int = 0
 @onready var tilemap: TileMapLayer = get_node("/root/mylevel/Level_test")
+@export var frozen = preload("res://scenes/frozemed.tscn")
 
 func _physics_process(delta: float) -> void:
 	counter = false
@@ -52,33 +54,26 @@ func player_collided(collision: String) -> void:
 		velocity = Vector2(0, -500)
 		stunned = true
 		stun_timer = 1.22
-	
+
+func freeze():
+	if chills > 2:
+		var new_frozen = frozen.instantiate()
+		get_parent().add_child(new_frozen)
+		new_frozen.position = position
+		print("ran this function ", new_frozen.global_position)
+		queue_free()
+	else:
+		chills += 1
+
 func proj_collided(id: String) -> void:
-	velocity.x *= 0.43
-	velocity.y = -200
 	stunned = true
 	stun_timer = .5
 	match id:
+		"20":
+			velocity.x -= 2*velocity.x
+			velocity.y = -200
+		"50":
+			freeze()
 		_:
-			pass
-
-"""func _on_ev_p_collision_area_entered(area: Area2D) -> void:
-	if not area.is_in_group("friendly hitbox"):
-			return
-			
-	print("collided with", area)
-	var enemshape : Shape2D=  $"EvP collision/Unique".shape
-	var pshape : Shape2D =area.get_node("Collision normal").shape
-		
-	var enem_top : float = global_position.y - enemshape.size.y / 2
-	var player_bottom: float = area.global_position.y + pshape.size.y / 2#(pshape.height + pshape.radius * 2) / 2
-	
-	if enem_top < player_bottom:
-		print("stunned ", self.name)
-		velocity = Vector2(0, 100)
-		stunned = true
-		stun_timer = 3.0
-	else:
-		direction *= -1"""
-			
-	
+			velocity.x *= -0.43
+			velocity.y = -200

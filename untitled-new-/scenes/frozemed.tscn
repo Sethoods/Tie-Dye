@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://cl1ugtq6tyfj0"]
 
-[ext_resource type="Script" uid="uid://dipveaxy3kx8k" path="res://scenes/frozemed.gd" id="1_hjprr"]
+[ext_resource type="Script" uid="uid://dipveaxy3kx8k" path="res://scripts/frozemed.gd" id="1_hjprr"]
 [ext_resource type="Texture2D" uid="uid://dv6hw70nm1hyp" path="res://art/frozen ph.png" id="2_gnv2c"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_llj3d"]
@@ -20,7 +20,7 @@ height = 20.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_llj3d"]
 
-[node name="frozemed" type="CharacterBody2D"]
+[node name="frozemed" type="CharacterBody2D" groups=["Ice Hitboxes"]]
 collision_layer = 4
 script = ExtResource("1_hjprr")
 

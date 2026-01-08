@@ -13,6 +13,7 @@ var spin_timer := 0.0
 var angle := 0.0 
 var is_burning = false
 var is_gravity = true
+@export var cluster = preload("res://scenes/paper.tscn")
 
 func apply_normal(normal: Vector2, delta: float, cast: RayCast2D) -> Vector2:
 			if normal != Vector2.ZERO:
@@ -35,15 +36,26 @@ func apply_normal(normal: Vector2, delta: float, cast: RayCast2D) -> Vector2:
 			$PaperRay.target_position = tangent * max(12, velocity.length() * delta * 2)
 			return tangent
 
-func _ready() -> void:
-	id = str(player.primary_dye) + str(player.secondary_dye)
-	#print(id)
+func  child_proj():			
+	var droplet = cluster.instantiate()
+	droplet.player = self
+	droplet.id = "E0"
+	get_parent().add_child(droplet)
+	droplet.global_position = position
 
-	base_velocity = Vector2(150*player.proj_dir[0], -200*(player.proj_dir[1]))
-	#print(base_velocity)
-	velocity.x += base_velocity.x + player.velocity.x
-	velocity.y += base_velocity.y
-	
+func _ready() -> void:
+	if id != "E0":
+		id = str(player.primary_dye) + str(player.secondary_dye)
+		print(id)
+		base_velocity = Vector2(150*player.proj_dir[0], -200*(player.proj_dir[1]))
+		#print(base_velocity)
+		velocity.x += base_velocity.x + player.velocity.x
+		velocity.y += base_velocity.y
+	else:
+		velocity.x = randi_range(-300, 300)
+		velocity.y = randi_range(-300, 300)
+		scale *= 0.5
+
 	match id:
 		"10":
 			is_burning = true
@@ -64,6 +76,7 @@ func _ready() -> void:
 				velocity.x = 200
 		"40":
 			is_gravity = false
+			velocity.x /= 1.2
 			#velocity.y += 20
 			if player.proj_dir[0] == 0:
 				velocity.x = 200
@@ -74,6 +87,9 @@ func _ready() -> void:
 			velocity /= 2
 			$Timer.stop()
 			$Timer.start(5)
+		"70":
+			$Timer.stop()
+			$Timer.start(1)
 		"80":
 			$PaperRay.enabled = true
 			$PaperRay.target_position = Vector2(velocity.x/30, velocity.y/30)
@@ -90,19 +106,25 @@ func _ready() -> void:
 			pass
 	
 	$ProjSprite.region_enabled = true
-	var regx = 60*player.primary_dye
-	var regy = 60*player.secondary_dye
-	$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)	
+	if id != "E0":
+		var regx = 60*player.primary_dye
+		var regy = 60*player.secondary_dye
+		$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)
 		
-	if player.proj_dir[1] == 0 and is_gravity == true:
-		velocity.y -= 100
+		if player.proj_dir[1] == 0 and is_gravity == true:
+			velocity.y -= 100
+	else:
+		var regx = 60*6
+		var regy = 60*1
+		$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)
+		
+	
 
 	
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:	
-	var motion_origin = position
 	match id:
 		"20":
 			spin_timer += delta
@@ -119,7 +141,7 @@ func _physics_process(delta: float) -> void:
 					saved_velocity = Vector2.ZERO
 		"30":
 			spin_timer += delta
-			var osc = 3*cos(100*(spin_timer))
+			var osc = 15*cos(25*(spin_timer))
 			position.y += osc
 		"40":
 			if base_velocity.x >= 0:
@@ -131,6 +153,7 @@ func _physics_process(delta: float) -> void:
 			else:
 				velocity.y += delta*70
 		"50":
+			var motion_origin = position
 			spin_timer += delta
 			angle += delta * 20
 			var spiral_distance : float = delta * 625
@@ -170,11 +193,14 @@ func _physics_process(delta: float) -> void:
 		velocity.y += 250  * delta
 	if is_gravity or id == "10" or id == "40":
 		pass
-	$ProjSprite.rotation_degrees += 200*delta
+	$ProjSprite.rotation_degrees += 2000*delta
+	$CollisionShape2D.rotation_degrees += 2000*delta
 	position += velocity * delta
 
-
 func _on_timer_timeout() -> void:
+	if id == "70":
+		for  i in range(8):
+			child_proj()
 	queue_free()
 
 
@@ -183,12 +209,30 @@ func _on_body_entered(body: Node2D) -> void:
 		match id:
 			"20","30","50","80", "100":
 				return
+			"70":
+				for  i in range(5):
+					child_proj()
+				queue_free()
 			_:
 				queue_free()
 
 
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
-		if id != "30":
+		var boksy = area.get_parent() as CharacterBody2D
+		if not id == "30" or id != "80":
+			print(id)
 			queue_free()
-		area.get_parent().proj_collided(id)
+		if id == "60":
+			boksy.freeze()
+			queue_free()
+		if id == "70":
+			for  i in range(8):
+					child_proj()
+		if id == "80":
+			if velocity.y > boksy.velocity.y:
+				velocity.y *= -1
+			velocity.y *= -1
+			
+			
+		boksy.proj_collided(id)

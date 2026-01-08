@@ -49,3 +49,6 @@ position = Vector2(646, -611)
 
 [node name="frozemed2" parent="." instance=ExtResource("7_lbssl")]
 position = Vector2(-1046, -414)
+
+[node name="CharacterBody2D3" parent="." instance=ExtResource("6_dtrk2")]
+position = Vector2(426, -879)

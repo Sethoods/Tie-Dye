@@ -250,7 +250,8 @@ func _physics_process(delta: float) -> void:
 			shooting = false
 			shoot_timer = 0
 	
-	if Input.is_action_just_pressed("shoot") and not rolling and shoot_timer <= 0 and not is_hurt and not has_djumped and not is_crouching:
+	if Input.is_action_just_pressed("shoot") and not rolling and shoot_timer <= 0 and not is_hurt and not has_djumped:
+		is_crouching = false
 		var current_dye = [primary_dye, secondary_dye]
 		match current_dye:
 			[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0], [9,0]:
