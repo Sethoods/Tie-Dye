@@ -93,6 +93,12 @@ func _ready() -> void:
 		"80":
 			$PaperRay.enabled = true
 			$PaperRay.target_position = Vector2(velocity.x/30, velocity.y/30)
+		"90":
+			velocity.y += -100
+			velocity.x /= 2
+			saved_velocity = velocity
+			$Timer.stop()
+			$Timer.start(7)
 		"100":
 			$Metal.enabled = true
 			$PaperRay.enabled = true
@@ -167,6 +173,19 @@ func _physics_process(delta: float) -> void:
 				normal = $PaperRay.get_collision_normal()
 				var speed = velocity.length()
 				velocity = normal * speed
+		"90":
+			spin_timer += delta * player.velocity.x
+			if $Timer.time_left >1:
+				angle += delta * 20
+				position.y = player.global_position.y + sin(angle) * 50
+				position.x = player.global_position.x + cos(angle) * 50
+				is_gravity = false
+			else:
+				if saved_velocity != Vector2.ZERO:
+					is_gravity = true
+					velocity = saved_velocity
+					velocity.x += player.velocity.x
+					saved_velocity = Vector2.ZERO
 		"100":
 			var normal := Vector2.ZERO
 					
@@ -207,7 +226,7 @@ func _on_timer_timeout() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20","30","50","80", "100":
+			"20","30","50","80","90", "100":
 				return
 			"70":
 				for  i in range(5):
@@ -220,7 +239,7 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy = area.get_parent() as CharacterBody2D
-		if not id == "30" or id != "80":
+		if not id == "30" or not id == "80":
 			print(id)
 			queue_free()
 		if id == "60":

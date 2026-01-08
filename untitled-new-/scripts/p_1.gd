@@ -254,10 +254,10 @@ func _physics_process(delta: float) -> void:
 		is_crouching = false
 		var current_dye = [primary_dye, secondary_dye]
 		match current_dye:
-			[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0], [8,0], [9,0]:
+			[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
 				SHOOT_DELAY = 0.25
 				$ProjDelay.wait_time = SHOOT_DELAY*0.03
-			[2, 0]:
+			[2, 0], [8,0], [9,0]:
 				SHOOT_DELAY = 1
 				$ProjDelay.wait_time = 0.001
 			[10, 0]:

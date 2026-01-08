@@ -9,6 +9,16 @@ var chills : int = 0
 @onready var tilemap: TileMapLayer = get_node("/root/mylevel/Level_test")
 @export var frozen = preload("res://scenes/frozemed.tscn")
 
+func freeze():
+	if chills > 2:
+		var new_frozen = frozen.instantiate()
+		get_parent().add_child(new_frozen)
+		new_frozen.position = position
+		print("ran this function ", new_frozen.global_position)
+		queue_free()
+	else:
+		chills += 1
+
 func _physics_process(delta: float) -> void:
 	counter = false
 	floor_max_angle=PI/2.1
@@ -55,16 +65,6 @@ func player_collided(collision: String) -> void:
 		stunned = true
 		stun_timer = 1.22
 
-func freeze():
-	if chills > 2:
-		var new_frozen = frozen.instantiate()
-		get_parent().add_child(new_frozen)
-		new_frozen.position = position
-		print("ran this function ", new_frozen.global_position)
-		queue_free()
-	else:
-		chills += 1
-
 func proj_collided(id: String) -> void:
 	stunned = true
 	stun_timer = .5
@@ -73,7 +73,7 @@ func proj_collided(id: String) -> void:
 			velocity.x -= 2*velocity.x
 			velocity.y = -200
 		"50":
-			freeze()
+			pass
 		_:
 			velocity.x *= -0.43
 			velocity.y = -200
