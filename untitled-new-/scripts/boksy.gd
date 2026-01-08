@@ -9,6 +9,7 @@ var stunned := false
 var chills : int = 0
 var burndedness: int = 0
 var shocks : int = 0
+var shock_timer : float = 0.5
 @onready var tilemap: TileMapLayer = get_node("/root/mylevel/Level_test")
 @export var frozen = preload("res://scenes/frozemed.tscn")
 var time_extant = 0
