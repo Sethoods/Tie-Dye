@@ -16,8 +16,12 @@ var time_extant = 0
 
 func shock(numero: int):
 	if numero > 3:
+		numero = 0
 		return
 	shocks = numero
+	if Time.get_ticks_msec()/1000 -time_extant > shock_timer:
+		return
+	time_extant = Time.get_ticks_msec()/1000
 	$AOE.set_deferred("monitoring", true)
 	await get_tree().create_timer(0.2).timeout
 	$AOE.set_deferred("monitoring", false)
@@ -139,6 +143,8 @@ func _on_aoe_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy := area.get_parent()
 		boksy.shock(shocks + 1)
-		print("chain ", boksy.name)
 		$AOE.set_deferred("monitoring", false)
+		await  get_tree().create_timer(0.1).timeout
+		print("chain ", boksy.name)
+
 		
