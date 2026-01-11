@@ -269,7 +269,7 @@ func _on_area_entered(area: Area2D) -> void:
 		if is_burning:
 			boksy.burn()
 		if is_shocking:
-			boksy.shock(0)
+			boksy.shock(0, position)
 
 		if is_healing:
 			player.health += boksy.health /4

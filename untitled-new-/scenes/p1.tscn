@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bdpuc04hrh0gk" path="res://scripts/p_1.gd" id="1_vokph"]
 [ext_resource type="Texture2D" uid="uid://dch2mqi2a84hp" path="res://art/TieDye Spritesheets V1.png" id="2_6u33n"]
-[ext_resource type="Shader" uid="uid://w0xg2jtmcysc" path="res://art/tiecolor.gdshader" id="2_qmb28"]
+[ext_resource type="Shader" uid="uid://w0xg2jtmcysc" path="res://art/shaders/tiecolor.gdshader" id="2_qmb28"]
 [ext_resource type="Script" uid="uid://ch1pmqey7oqc3" path="res://scripts/marker_2d.gd" id="3_6u33n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m01ht"]
@@ -202,7 +202,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"float",
-"speed": 8.0
+"speed": 4.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -373,14 +373,14 @@ script = ExtResource("1_vokph")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-1, 0)
-zoom = Vector2(2, 2)
+zoom = Vector2(3, 3)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_m01ht")
 position = Vector2(0, -0.25000012)
 scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"spinthrow"
+animation = &"float"
 autoplay = "default"
 
 [node name="Marker2D" type="Marker2D" parent="."]

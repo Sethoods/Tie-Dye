@@ -12,16 +12,27 @@ var shocks : int = 0
 var shock_timer : float = 0.5
 @onready var tilemap: TileMapLayer = get_node("/root/mylevel/Level_test")
 @export var frozen = preload("res://scenes/frozemed.tscn")
+var effect_temp = preload("res://art/lightningfekt ph.png")
 var time_extant = 0
 
-func shock(numero: int):
+func shock(numero: int, original_pos: Vector2):
 	if numero > 3:
 		numero = 0
 		return
 	shocks = numero
-	if Time.get_ticks_msec()/1000 -time_extant > shock_timer:
+	if time_extant > shock_timer:
+		time_extant = 0
 		return
-	time_extant = Time.get_ticks_msec()/1000
+	var lightning = Line2D.new()
+	lightning.width = 3.0
+	lightning.default_color = Color.YELLOW
+	get_parent().add_child(lightning)
+	
+	health -= 0.5
+	lightning.add_point(original_pos)
+	lightning.add_point(position)
+	await get_tree().create_timer(1).timeout
+	lightning.queue_free()
 	$AOE.set_deferred("monitoring", true)
 	await get_tree().create_timer(0.2).timeout
 	$AOE.set_deferred("monitoring", false)
@@ -29,7 +40,7 @@ func shock(numero: int):
 
 
 func freeze():
-	if chills > 2:
+	if chills > 2 or health <= 0:
 		var new_frozen = frozen.instantiate()
 		get_parent().add_child(new_frozen)
 		new_frozen.position = position
@@ -45,14 +56,14 @@ func burn():
 	print("ok it stopped burning")
 	
 func die():
-	print("This enemy would have died right now.")
+	print("This enemy died")
 	health = 10
 	stunned = true
 	stun_timer = 50
 	velocity = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
-	time_extant += 1
+	time_extant += delta
 	if health <= 0:
 		die()
 	counter = false
@@ -112,10 +123,10 @@ func player_collided(collision: String) -> void:
 func proj_collided(id: String) -> void:
 	stunned = true
 	stun_timer = .25
+	velocity.x *= -0.43
+	velocity.y = -200
 	match id:
 		"10":
-			velocity.x *= -0.43
-			velocity.y = -200
 			health -= 2
 		"20":
 			velocity.x -= 2*velocity.length()
@@ -125,8 +136,6 @@ func proj_collided(id: String) -> void:
 			health -= 1
 			stun_timer += 1
 		"40":
-			velocity.x *= -0.43
-			velocity.y = -200
 			health -= 0.5
 		"50":
 			if is_on_floor():
@@ -134,17 +143,27 @@ func proj_collided(id: String) -> void:
 			else:
 				velocity.y = 500
 			health -= 1	
+		"60":
+			health -=0.5
+			if health <= 0:
+				freeze()
+		"70":
+			health -= 1
+		"E0":
+			health -= 0.5
+		"80":
+			health -= 1
+		"90":
+			health -= 2
+		"100":
+			health -= 3
 		_:
-			velocity.x *= -0.43
-			velocity.y = -200
-
+			pass
 
 func _on_aoe_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy := area.get_parent()
-		boksy.shock(shocks + 1)
+		boksy.shock(shocks + 1, position)
 		$AOE.set_deferred("monitoring", false)
 		await  get_tree().create_timer(0.1).timeout
-		print("chain ", boksy.name)
-
-		
+		#print("chain ", boksy.name)

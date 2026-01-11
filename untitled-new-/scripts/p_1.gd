@@ -179,7 +179,7 @@ func _input(_event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	colorate([primary_dye, secondary_dye])
-	floor_snap_length = 30 if rolling else 5
+	floor_snap_length = 30 if rolling else 10
 	floor_max_angle = PI/2.1
 	
 	if is_crouching or has_djumped:
