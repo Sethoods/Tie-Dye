@@ -51,7 +51,7 @@ func _ready() -> void:
 	if id != "E0":
 		id = str(player.primary_dye) + str(player.secondary_dye)
 		#print(id)
-		base_velocity = Vector2(150*player.proj_dir[0], -200*(player.proj_dir[1]))
+		base_velocity = Vector2(125*player.proj_dir[0], -200*(player.proj_dir[1]))
 		#print(base_velocity)
 		velocity.x += base_velocity.x + player.velocity.x
 		velocity.y += base_velocity.y
@@ -135,12 +135,6 @@ func _ready() -> void:
 		var regx = 60*6
 		var regy = 60*1
 		$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)
-		
-	
-
-	
-	
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:	
 	match id:
