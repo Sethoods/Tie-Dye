@@ -7,8 +7,8 @@
 atlas = ExtResource("1_smajk")
 region = Rect2(0, 0, 64, 640)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_71s2g"]
-size = Vector2(16, 16)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c6ol5"]
+size = Vector2(16, 160)
 
 [node name="Vine" type="Area2D"]
 collision_mask = 2
@@ -20,4 +20,4 @@ scale = Vector2(0.25, 0.25)
 texture = SubResource("AtlasTexture_c6ol5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Climb Hitboxes"]]
-shape = SubResource("RectangleShape2D_71s2g")
+shape = SubResource("RectangleShape2D_c6ol5")

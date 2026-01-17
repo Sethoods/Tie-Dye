@@ -45,6 +45,8 @@ var hurt_timer : float = 0.0
 var health : int = 0
 
 var is_crouching : bool = false
+var is_climbing : bool = false
+var is_gravity : bool = true
 
 func colorate(current_dye: Array):
 	if current_dye[0] == DYES["NULL"] and current_dye[1] == DYES["NULL"]:
@@ -172,6 +174,10 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 		else:
 			print("slide")
 			area.get_parent().player_collided("slide")
+	elif area.is_in_group("Climb Hitboxes"):
+		if Input.is_action_pressed("up"):
+			is_climbing = true
+			print("climbibg")
 
 func _input(_event: InputEvent) -> void:
 	if _event.is_action_pressed("move_left") or _event.is_action_pressed("move_right") or _event.is_action_pressed("crouch") or _event.is_action_pressed("up"):
@@ -192,6 +198,11 @@ func _physics_process(delta: float) -> void:
 		$"PvE collision/Collision normal".set_deferred("disabled", false)
 		$GroundCollision.set_deferred("disabled", false)
 		$Crouch2.set_deferred("disabled", true)
+		
+	if is_climbing:
+		if Input.is_action_pressed("up"):
+			velocity.y = -100
+			is_gravity = false
 	
 	if is_hurt:
 		hurt_timer += delta
@@ -201,9 +212,9 @@ func _physics_process(delta: float) -> void:
 	#var recent_input := 
 	
 	# Add the gravity.
-	if not is_on_floor():
+	if not is_on_floor() and is_gravity == true:
 		velocity += get_gravity()/1.5 * delta if has_djumped == false else get_gravity()/3 * delta
-		velocity.x -= velocity.x/10*delta
+		velocity.x -= direction*1*delta
 	elif is_on_floor():
 		has_djumped = false
 
@@ -216,12 +227,14 @@ func _physics_process(delta: float) -> void:
 		direction = prev_dir
 		prev_dir = 0
 	if direction and prev_dir and not is_hurt:
-		if not rolling:
+		if not rolling and not is_climbing:
 			var max_movement_speed = SPEED * accel
 			velocity.x = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED * 5) * delta) 
 			if is_crouching:
 				velocity.x /= 1.5
 			accel += RATE_GROWTH_ACCEL*delta*2
+		elif is_climbing:
+			velocity.x += 10*delta
 		else:
 			if velocity.x < 0.1 or velocity.x > -0.1:
 				if velocity.x >= 0.1 and direction < 0 or velocity.x <= 0.1 and direction > 0 :
@@ -236,6 +249,8 @@ func _physics_process(delta: float) -> void:
 		
 		
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not is_crouching:
+		is_climbing = false
+		is_gravity = true
 		velocity.y = JUMP_VELOCITY-((accel-1)*7.5)
 		velocity.x = velocity.x
 		rolling = false
@@ -243,6 +258,8 @@ func _physics_process(delta: float) -> void:
 			hurt_timer = 0
 			is_hurt = false
 	elif Input.is_action_just_pressed("jump") and not is_on_floor() and not has_djumped and not is_hurt:
+		is_climbing = false
+		is_gravity = true
 		velocity.y = JUMP_VELOCITY/2
 		has_djumped = true
 	
@@ -277,11 +294,13 @@ func _physics_process(delta: float) -> void:
 
 		
 		
-	if Input.is_action_just_pressed("crouch") and is_on_floor() and velocity.x != 0:
+	if Input.is_action_just_pressed("crouch") and is_on_floor() and velocity.x != 0 and not is_climbing:
 		rolling = true
-	elif Input.is_action_pressed("crouch") and not shooting and not has_djumped and not rolling: 
+	elif Input.is_action_pressed("crouch") and not shooting and not has_djumped and not rolling and not is_climbing: 
 		is_crouching = true
 		$AnimatedSprite2D.play("duck")
+	elif Input.is_action_pressed("crouch"):
+		velocity.y = 100
 	else:
 		is_crouching = false
 		

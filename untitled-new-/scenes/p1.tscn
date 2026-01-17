@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://c788sfrv8kllu"]
+[gd_scene load_steps=50 format=3 uid="uid://c788sfrv8kllu"]
 
 [ext_resource type="Script" uid="uid://bdpuc04hrh0gk" path="res://scripts/p_1.gd" id="1_vokph"]
 [ext_resource type="Texture2D" uid="uid://dch2mqi2a84hp" path="res://art/TieDye Spritesheets V1.png" id="2_6u33n"]
@@ -9,6 +9,18 @@
 shader = ExtResource("2_qmb28")
 shader_parameter/fill_color = Color(0.95, 0.95, 0.95, 1)
 shader_parameter/strength = 1.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jxlxg"]
+atlas = ExtResource("2_6u33n")
+region = Rect2(300, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_srdj7"]
+atlas = ExtResource("2_6u33n")
+region = Rect2(400, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tvt0e"]
+atlas = ExtResource("2_6u33n")
+region = Rect2(500, 200, 100, 100)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qmb28"]
 atlas = ExtResource("2_6u33n")
@@ -160,6 +172,23 @@ region = Rect2(1500, 0, 100, 100)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_m008u"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jxlxg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_srdj7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tvt0e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_srdj7")
+}],
+"loop": true,
+"name": &"climb",
+"speed": 6.0
+}, {
 "frames": [{
 "duration": 2.61,
 "texture": SubResource("AtlasTexture_qmb28")
@@ -380,8 +409,9 @@ material = SubResource("ShaderMaterial_m01ht")
 position = Vector2(0, -0.25000012)
 scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"float"
+animation = &"climb"
 autoplay = "default"
+frame_progress = 0.20070228
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(10, -5)

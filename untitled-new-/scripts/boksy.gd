@@ -70,7 +70,7 @@ func _physics_process(delta: float) -> void:
 	floor_max_angle=PI/2.1
 
 	velocity.y += get_gravity().y * delta
-	if stunned == false:
+	if stunned == false and not $RayCastForward.is_colliding():
 		velocity.x = speed * direction
 		
 		var ahead_cell = tilemap.local_to_map(global_position + Vector2(direction * 8, 0))

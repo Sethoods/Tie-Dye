@@ -64,3 +64,9 @@ position = Vector2(342, 383)
 
 [node name="thirdchain" parent="." instance=ExtResource("5_51dsx")]
 position = Vector2(422, 463)
+
+[node name="boksy" parent="." instance=ExtResource("5_51dsx")]
+position = Vector2(2, -346)
+
+[node name="boksy2" parent="." instance=ExtResource("5_51dsx")]
+position = Vector2(503, -855)

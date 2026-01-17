@@ -6,7 +6,7 @@ func instantiate_scene(scene: Resource, this_position: Vector2, length: int):
 	var vine = scene.instantiate()
 	#print("vine exists")
 	vine.position = map_to_local(this_position)
-	vine.length = length
+	vine.set_length(length)
 	add_child(vine)
 	#print(vine.global_position)
 
