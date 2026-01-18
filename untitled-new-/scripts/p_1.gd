@@ -174,16 +174,23 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 		else:
 			print("slide")
 			area.get_parent().player_collided("slide")
-	elif area.is_in_group("Climb Hitboxes"):
-		if Input.is_action_pressed("up"):
-			is_climbing = true
-			print("climbibg")
+			
+func climb_state(state: bool):
+	if state == true and Input.is_action_just_pressed("up"):
+		is_climbing = true
+	else:
+		is_climbing = false
+		print("is_false")
 
 func _input(_event: InputEvent) -> void:
 	if _event.is_action_pressed("move_left") or _event.is_action_pressed("move_right") or _event.is_action_pressed("crouch") or _event.is_action_pressed("up"):
 		proj_dir = Vector2(Input.get_axis("move_left", "move_right"), Input.get_axis("crouch", "up"))
 
 func _physics_process(delta: float) -> void:
+	if is_climbing:
+		is_gravity = false
+	else:
+		is_gravity = true
 	colorate([primary_dye, secondary_dye])
 	floor_snap_length = 30 if rolling else 10
 	floor_max_angle = PI/2.1

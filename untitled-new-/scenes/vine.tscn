@@ -11,6 +11,7 @@ region = Rect2(0, 0, 64, 640)
 size = Vector2(16, 160)
 
 [node name="Vine" type="Area2D" groups=["Climb Hitboxes"]]
+collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_c6ol5")
 
@@ -20,3 +21,6 @@ texture = SubResource("AtlasTexture_c6ol5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_c6ol5")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_area_exited"]
