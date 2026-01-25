@@ -11,7 +11,7 @@ region = Rect2(0, 0, 64, 640)
 size = Vector2(16, 160)
 
 [node name="Vine" type="Area2D" groups=["Climb Hitboxes"]]
-collision_layer = 0
+collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_c6ol5")
 

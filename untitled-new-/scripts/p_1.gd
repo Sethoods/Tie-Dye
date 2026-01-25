@@ -47,6 +47,8 @@ var health : int = 0
 var is_crouching : bool = false
 var is_climbing : bool = false
 var is_gravity : bool = true
+var wind_pushing : bool = false
+var cast : RayCast2D
 
 func colorate(current_dye: Array):
 	if current_dye[0] == DYES["NULL"] and current_dye[1] == DYES["NULL"]:
@@ -81,12 +83,17 @@ func animate(_delta: float) -> void:
 		$AnimatedSprite2D.flip_h = true
 	else:
 		$AnimatedSprite2D.flip_h = false
+	if is_climbing:
+		return	
+	if wind_pushing:
+		return
 	if shooting:
 		return
 	if is_hurt:
 		return
 	if is_crouching:
 		return
+	
 	if rolling == true:
 		if velocity.y < 0:
 			$AnimatedSprite2D.play("slide up")
@@ -174,28 +181,57 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 		else:
 			print("slide")
 			area.get_parent().player_collided("slide")
-			
+	elif area.is_in_group("Fans"):
+		cast = area.get_node("RayCast2D") as RayCast2D
+		wind_pushing = true
+	
+func _on_pv_e_collision_area_exited(area: Area2D) -> void:
+	if area.is_in_group("Fans"):
+		wind_pushing = false
+	
 func climb_state(state: bool):
-	if state == true and Input.is_action_just_pressed("up"):
+	if state == true and Input.is_action_pressed("up") or Input.is_action_pressed("crouch") and not has_djumped:
 		is_climbing = true
-	else:
+	if state == false:
 		is_climbing = false
-		print("is_false")
+
+func wind_state(state: bool, delta: float):
+	if state == true:
+		is_climbing = false
+		print(cast.target_position.y)
+		velocity.y += -30*cast.target_position.y*delta
+		velocity.x += -10*cast.target_position.x*delta
+	if state == false:
+		pass
 
 func _input(_event: InputEvent) -> void:
 	if _event.is_action_pressed("move_left") or _event.is_action_pressed("move_right") or _event.is_action_pressed("crouch") or _event.is_action_pressed("up"):
 		proj_dir = Vector2(Input.get_axis("move_left", "move_right"), Input.get_axis("crouch", "up"))
 
 func _physics_process(delta: float) -> void:
-	if is_climbing:
-		is_gravity = false
-	else:
-		is_gravity = true
-	colorate([primary_dye, secondary_dye])
 	floor_snap_length = 30 if rolling else 10
 	floor_max_angle = PI/2.1
 	
-	if is_crouching or has_djumped:
+	if $"PvE collision".has_overlapping_areas() == false:
+		climb_state(false)
+		
+	if wind_pushing:
+		has_djumped = false
+		$AnimatedSprite2D.play("jump")
+		wind_state(wind_pushing, delta)
+	
+	if is_climbing:
+		is_gravity = false
+		if velocity != Vector2.ZERO:
+			$AnimatedSprite2D.play("climb")
+		else:
+			$AnimatedSprite2D.pause()
+	else:
+		is_gravity = true
+	colorate([primary_dye, secondary_dye])
+
+	
+	if is_crouching or has_djumped or rolling:
 		$"PvE collision/Crouch".set_deferred("disabled", false)
 		$"PvE collision/Collision normal".set_deferred("disabled", true)
 		$GroundCollision.set_deferred("disabled", true)
@@ -205,18 +241,21 @@ func _physics_process(delta: float) -> void:
 		$"PvE collision/Collision normal".set_deferred("disabled", false)
 		$GroundCollision.set_deferred("disabled", false)
 		$Crouch2.set_deferred("disabled", true)
-		
+	
 	if is_climbing:
 		if Input.is_action_pressed("up"):
+			if wind_pushing:
+				velocity += -cast.target_position
 			velocity.y = -100
 			is_gravity = false
+		else:
+			velocity.y = 0
 	
 	if is_hurt:
 		hurt_timer += delta
 		if hurt_timer > 1:
 			hurt_timer = 0
 			is_hurt = false
-	#var recent_input := 
 	
 	# Add the gravity.
 	if not is_on_floor() and is_gravity == true:
@@ -241,7 +280,7 @@ func _physics_process(delta: float) -> void:
 				velocity.x /= 1.5
 			accel += RATE_GROWTH_ACCEL*delta*2
 		elif is_climbing:
-			velocity.x += 10*delta
+			velocity.x += 100*delta*direction
 		else:
 			if velocity.x < 0.1 or velocity.x > -0.1:
 				if velocity.x >= 0.1 and direction < 0 or velocity.x <= 0.1 and direction > 0 :
@@ -250,7 +289,7 @@ func _physics_process(delta: float) -> void:
 				velocity.x -= -velocity.x*delta
 			
 #		print("%s"%[slope_dir])
-	elif not rolling and is_on_floor():
+	elif not rolling and is_on_floor() or is_climbing:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		accel = move_toward(accel, 0, RATE_GROWTH_ACCEL*100*delta)
 		
@@ -306,8 +345,10 @@ func _physics_process(delta: float) -> void:
 	elif Input.is_action_pressed("crouch") and not shooting and not has_djumped and not rolling and not is_climbing: 
 		is_crouching = true
 		$AnimatedSprite2D.play("duck")
-	elif Input.is_action_pressed("crouch"):
+	elif Input.is_action_pressed("crouch") and is_climbing:
 		velocity.y = 100
+		if wind_pushing:
+			velocity.y /= 2
 	else:
 		is_crouching = false
 		
@@ -323,7 +364,7 @@ func _physics_process(delta: float) -> void:
 			tangent = -tangent
 		slope_dir = Vector2(0,1).project(tangent).normalized()
 		velocity +=  slope_dir * (200 * roll_accel) * delta
-	if not rolling and not direction:
+	if not rolling:
 		roll_accel = move_toward(roll_accel, 0.0, 200 * delta)
 	
 	animate(delta)

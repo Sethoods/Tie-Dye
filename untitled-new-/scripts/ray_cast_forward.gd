@@ -4,8 +4,8 @@ extends RayCast2D
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	position.x = 8
-	position.y = 5
-	target_position = Vector2(8, -15)
+	position.y = 3
+	target_position = Vector2(6, -20)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

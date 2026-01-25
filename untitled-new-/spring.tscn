@@ -1,10 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://dwn8h7fx7rlf0"]
+[gd_scene load_steps=4 format=3 uid="uid://dwn8h7fx7rlf0"]
+
+[ext_resource type="Texture2D" uid="uid://c2cfib8r3qflr" path="res://art/level elements V1.png" id="1_ka4py"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_boyml"]
+atlas = ExtResource("1_ka4py")
+region = Rect2(64, 128, 64, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ie264"]
+size = Vector2(64, 34)
 
 [node name="Spring" type="Area2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_boyml")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 15)
 shape = SubResource("RectangleShape2D_ie264")
