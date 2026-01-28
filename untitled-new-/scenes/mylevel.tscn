@@ -70,3 +70,9 @@ position = Vector2(2, -346)
 
 [node name="boksy2" parent="." instance=ExtResource("5_51dsx")]
 position = Vector2(503, -855)
+
+[node name="paintball" parent="." instance=ExtResource("6_dtrk2")]
+position = Vector2(-1015, -424)
+
+[node name="paintball2" parent="." instance=ExtResource("6_dtrk2")]
+position = Vector2(-38, 377)

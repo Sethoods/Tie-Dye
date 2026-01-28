@@ -2,16 +2,16 @@ extends TileMapLayer
 
 var vine_scene = preload("res://scenes/vine.tscn")
 var fan_scene = preload("res://scenes/fan.tscn")
+var spring_scene = preload("res://scenes/spring.tscn")
 # Called when the node enters the scene tree for the first time.
 func instantiate_scene(scene: Resource, this_position: Vector2, value, entity : String):
 	var element = scene.instantiate()
 	#print("vine exists")
 	element.position = map_to_local(this_position)
-	print(element.position)
 	match entity:
 		"Vine":
 			element.set_length(value)
-		"Fan":
+		"Fan", "Spring":
 			element.direct(value)
 	add_child(element)
 	#print(vine.global_position)
@@ -52,10 +52,19 @@ func _ready() -> void:
 
 		for cell in cell_list:
 			var is_solid = get_cell_tile_data(cell)
-			if is_solid and is_solid.get_custom_data("is_solid"):
+			if is_solid and is_solid.get_custom_data("is_flat"):
 				cell_normal = fan_pos-Vector2i(cell)
-				print(cell_normal)
 		instantiate_scene(fan_scene, fan_pos, cell_normal, "Fan")
+		
+	for spring_pos in await get_array_tiles(Vector2i(4,4),Vector2i(5,4)):
+		var cell_list = get_surrounding_cells(spring_pos)
+		var cell_normal := Vector2i.ZERO
+
+		for cell in cell_list:
+			var is_solid = get_cell_tile_data(cell)
+			if is_solid and is_solid.get_custom_data("is_flat"):
+				cell_normal = spring_pos-Vector2i(cell)
+		instantiate_scene(spring_scene, spring_pos, cell_normal, "Spring")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

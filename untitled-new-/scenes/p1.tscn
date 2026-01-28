@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://c788sfrv8kllu"]
+[gd_scene load_steps=53 format=3 uid="uid://c788sfrv8kllu"]
 
 [ext_resource type="Script" uid="uid://bdpuc04hrh0gk" path="res://scripts/p_1.gd" id="1_vokph"]
 [ext_resource type="Texture2D" uid="uid://dch2mqi2a84hp" path="res://art/TieDye Spritesheets V1.png" id="2_6u33n"]
@@ -7,8 +7,10 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m01ht"]
 shader = ExtResource("2_qmb28")
-shader_parameter/fill_color = Color(0.95, 0.95, 0.95, 1)
+shader_parameter/primary_color = Color(1, 1, 1, 1)
+shader_parameter/secondary_color = Color(1, 1, 1, 1)
 shader_parameter/strength = 1.0
+shader_parameter/onetwo = 0.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jxlxg"]
 atlas = ExtResource("2_6u33n")
@@ -121,6 +123,14 @@ region = Rect2(0, 100, 100, 100)
 [sub_resource type="AtlasTexture" id="AtlasTexture_oyxtu"]
 atlas = ExtResource("2_6u33n")
 region = Rect2(100, 100, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ag636"]
+atlas = ExtResource("2_6u33n")
+region = Rect2(900, 200, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x0to0"]
+atlas = ExtResource("2_6u33n")
+region = Rect2(1000, 200, 100, 100)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jqns1"]
 atlas = ExtResource("2_6u33n")
@@ -324,6 +334,29 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_ag636")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x0to0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ag636")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x0to0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ag636")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x0to0")
+}],
+"loop": true,
+"name": &"ratatata",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_jqns1")
 }],
 "loop": true,
@@ -401,7 +434,7 @@ animations = [{
 size = Vector2(10, 14)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qmb28"]
-size = Vector2(14, 3)
+size = Vector2(14, 4.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6u33n"]
 size = Vector2(8, 21)
@@ -419,10 +452,9 @@ material = SubResource("ShaderMaterial_m01ht")
 position = Vector2(0, -0.25000012)
 scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"throw"
+animation = &"ratatata"
 autoplay = "default"
-frame = 2
-frame_progress = 1.0
+frame_progress = 0.72334707
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(10, -5)
@@ -446,7 +478,7 @@ position = Vector2(1, 1.5)
 shape = SubResource("RectangleShape2D_6u33n")
 
 [node name="Crouch" type="CollisionShape2D" parent="PvE collision"]
-position = Vector2(0, 10)
+position = Vector2(0, 9)
 shape = SubResource("RectangleShape2D_qmb28")
 disabled = true
 

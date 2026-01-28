@@ -53,29 +53,78 @@ var cast : RayCast2D
 func colorate(current_dye: Array):
 	if current_dye[0] == DYES["NULL"] and current_dye[1] == DYES["NULL"]:
 		$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.95, 0.95, 0.95, 1.0))
-	elif current_dye[0] != DYES["NULL"] and current_dye[1] == DYES["NULL"]:
+	else:
 		match current_dye[0]:
-			DYES["FIRE"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(1.0, 0.0, 0.0, 1.0))
-			DYES["COMBAT"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(1.0, 0.5, 0.2, 1.0))
-			DYES["ELECTRIC"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(1.0, 1.0, 0.0, 1.0))
-			DYES["PLANT"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.0, 1.0, 0.0, 1.0))
-			DYES["AIR"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.0, 0.5, 0.4, 1.0))
-			DYES["ICE"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.0, 1.0, 1.0, 1.0))
-			DYES["WATER"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.0, 0.0, 1.0, 1.0))
-			DYES["ELASTIC"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.5, 0.0, 0.5, 1.0))
-			DYES["MYSTERY"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(1.0, 0.0, 1.0, 1.0))
-			DYES["METAL"]:
-				$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.6, 0.6, 0.6, 1.0))
+				DYES["FIRE"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(1.0, 0.0, 0.0, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 0.0, 0.0, 1.0))
+				DYES["COMBAT"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(1.0, 0.5, 0.2, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 0.5, 0.2, 1.0))
 
+				DYES["ELECTRIC"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(1.0, 1.0, 0.0, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 1.0, 0.0, 1.0))
+
+				DYES["PLANT"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.0, 1.0, 0.0, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.0, 1.0, 0.0, 1.0))
+
+				DYES["AIR"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.0, 0.5, 0.4, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.0, 0.5, 0.4, 1.0))
+
+				DYES["ICE"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.0, 1.0, 1.0, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.0, 1.0, 1.0, 1.0))
+
+				DYES["WATER"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.0, 0.0, 1.0, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.0, 0.0, 1.0, 1.0))
+
+				DYES["ELASTIC"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.5, 0.0, 0.5, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.5, 0.0, 0.5, 1.0))
+
+				DYES["MYSTERY"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.5, 0.0, 0.5, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.5, 0.0, 0.5, 1.0))
+
+				DYES["METAL"]:
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.6, 0.6, 0.6, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.6, 0.6, 0.6, 1.0))
+
+		if current_dye[0] != DYES["NULL"] and current_dye[1] != DYES["NULL"]:
+			match current_dye[1]:
+				DYES["FIRE"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 0.0, 0.0, 1.0))
+				DYES["COMBAT"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 0.5, 0.2, 1.0))
+
+				DYES["ELECTRIC"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 1.0, 0.0, 1.0))
+
+				DYES["PLANT"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.0, 1.0, 0.0, 1.0))
+
+				DYES["AIR"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.0, 0.5, 0.4, 1.0))
+
+				DYES["ICE"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.0, 1.0, 1.0, 1.0))
+
+				DYES["WATER"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.0, 0.0, 1.0, 1.0))
+
+				DYES["ELASTIC"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.5, 0.0, 0.5, 1.0))
+				DYES["MYSTERY"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 0.0, 1.0, 1.0))
+
+				DYES["METAL"]:
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.6, 0.6, 0.6, 1.0))
+		#else:
+			#$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.404, 0.188, 0.0, 1.0))
 	
 
 func animate(_delta: float) -> void:
@@ -119,31 +168,86 @@ func animate(_delta: float) -> void:
 				else:
 					$AnimatedSprite2D.play("fall")
 	$AnimatedSprite2D.speed_scale = 1 + (accel/2)
-
+	
+func match_secondary_id(id: int):
+	if id == primary_dye:
+		return
+	match id:
+		1:
+			secondary_dye = DYES["FIRE"]
+		2:
+			secondary_dye = DYES["COMBAT"]
+		3:
+			secondary_dye = DYES["ELECTRIC"]
+		4:
+			secondary_dye = DYES["PLANT"]
+		5:
+			secondary_dye = DYES["AIR"]
+		6:
+			secondary_dye = DYES["ICE"]
+		7:
+			secondary_dye = DYES["WATER"]
+		8:
+			secondary_dye = DYES["ELASTIC"]
+		9:
+			secondary_dye = DYES["MYSTERY"]
+		10:
+			secondary_dye = DYES["METAL"]
+		
 func power_up(paint_type: int):
 	match paint_type:
 		1:
-			primary_dye = DYES["FIRE"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["FIRE"]
+			else:
+				match_secondary_id(paint_type)
 		2:
-			primary_dye = DYES["COMBAT"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["COMBAT"]
+			else:
+				match_secondary_id(paint_type)
 		3:
-			primary_dye = DYES["ELECTRIC"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["ELECTRIC"]
+			else:
+				match_secondary_id(paint_type)
 		4:
-			primary_dye = DYES["PLANT"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["PLANT"]
+			else:
+				match_secondary_id(paint_type)
 		5:
-			primary_dye = DYES["AIR"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["AIR"]
+			else:
+				match_secondary_id(paint_type)
 		6:
-			primary_dye = DYES["ICE"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["ICE"]
+			else:
+				match_secondary_id(paint_type)
 		7:
-			primary_dye = DYES["WATER"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["WATER"]
+			else:
+				match_secondary_id(paint_type)
 		8:
-			primary_dye = DYES["ELASTIC"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["ELASTIC"]
+			else:
+				match_secondary_id(paint_type)
 		9:
-			primary_dye = DYES["MYSTERY"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["MYSTERY"]
+			else:
+				match_secondary_id(paint_type)
 		10:
-			primary_dye = DYES["METAL"]
+			if primary_dye == DYES["NULL"]:
+				primary_dye = DYES["METAL"]
+			else:
+				match_secondary_id(paint_type)
 	colorate([primary_dye, secondary_dye])
-	print("You have the ", DYES.find_key(primary_dye), " Dye")
+	print("You have the ", DYES.find_key(primary_dye),DYES.find_key(secondary_dye), " Dye")
 
 func shoot():
 	var player_proj = proj_scene.instantiate()
@@ -198,7 +302,6 @@ func climb_state(state: bool):
 func wind_state(state: bool, delta: float):
 	if state == true:
 		is_climbing = false
-		print(cast.target_position.y)
 		velocity.y += -30*cast.target_position.y*delta
 		velocity.x += -10*cast.target_position.x*delta
 	if state == false:
@@ -278,7 +381,7 @@ func _physics_process(delta: float) -> void:
 			velocity.x = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED * 5) * delta) 
 			if is_crouching:
 				velocity.x /= 1.5
-			accel += RATE_GROWTH_ACCEL*delta*2
+			accel += RATE_GROWTH_ACCEL*delta
 		elif is_climbing:
 			velocity.x += 100*delta*direction
 		else:
@@ -322,21 +425,34 @@ func _physics_process(delta: float) -> void:
 			[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
 				SHOOT_DELAY = 0.25
 				$ProjDelay.wait_time = SHOOT_DELAY*0.03
-			[2, 0], [8,0], [9,0]:
+			[2, 0], [8,0]:
 				SHOOT_DELAY = 1
 				$ProjDelay.wait_time = 0.001
-			[10, 0]:
+			[10, 0], [9,0]:
 				SHOOT_DELAY = .5
 				$ProjDelay.wait_time = SHOOT_DELAY*0.03
+			_:
+				SHOOT_DELAY = 0.25
+				$ProjDelay.wait_time = SHOOT_DELAY*0.03
 		shooting = true
-		if primary_dye == DYES["COMBAT"] and secondary_dye == DYES["NULL"]:
-			$AnimatedSprite2D.play("spinthrow")
-		else:
-			if velocity.x == 0:
-				$AnimatedSprite2D.play("throw")
-			else:
-				$AnimatedSprite2D.play("movethrow")
-		$ProjDelay.start()
+		match current_dye:
+			[2,0]:
+				$AnimatedSprite2D.play("spinthrow")
+			[1,2],[2,1]:
+				$AnimatedSprite2D.play("ratatata")
+			_:
+				if velocity.x == 0:
+					$AnimatedSprite2D.play("throw")
+				else:
+					$AnimatedSprite2D.play("movethrow")
+		
+		match current_dye:
+			[1,2],[2,1]:
+				for i in range(5):
+					$ProjDelay.start()
+					await get_tree().create_timer(0.075).timeout
+			_:
+				$ProjDelay.start()	
 
 		
 		
@@ -372,5 +488,6 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_proj_delay_timeout() -> void:
+		var current_dye = [primary_dye, secondary_dye]
 		shoot()
 		$ProjDelay.stop()

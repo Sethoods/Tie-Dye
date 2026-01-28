@@ -76,7 +76,9 @@ func _physics_process(delta: float) -> void:
 		var ahead_cell = tilemap.local_to_map(global_position + Vector2(direction * 8, 0))
 
 		for i in range(0,4):
-				if tilemap.get_cell_source_id(ahead_cell + Vector2i(0, i)) != -1 :#and not $RayCastForward.is_colliding():
+				var is_solid = tilemap.get_cell_tile_data(ahead_cell + Vector2i(0, i))
+				if is_solid and is_solid.get_custom_data("is_solid"):
+				#if tilemap.get_cell_source_id(ahead_cell + Vector2i(0, i)) != -1 :#and not $RayCastForward.is_colliding():
 					counter = true
 					break
 					

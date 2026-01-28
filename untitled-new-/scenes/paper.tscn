@@ -10,7 +10,7 @@ region = Rect2(0, 0, 900, 240)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vas6c"]
 size = Vector2(5.1819806, 19)
 
-[node name="paper" type="Area2D"]
+[node name="paper" type="Area2D" groups=["Projectile"]]
 collision_layer = 8
 collision_mask = 5
 script = ExtResource("1_vas6c")

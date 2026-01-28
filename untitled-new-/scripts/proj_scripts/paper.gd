@@ -6,7 +6,7 @@ var base_velocity := Vector2.ZERO
 
 var saved_velocity := Vector2.ZERO
 
-var player
+var player : CharacterBody2D
 var id
 var last_normal = Vector2.ZERO
 var spin_timer := 0.0
@@ -66,7 +66,23 @@ func _ready() -> void:
 			is_gravity = false
 			velocity.x *= 2
 			if player.proj_dir[0] == 0:
-				velocity.x = 200
+				velocity.x = 600
+		"12", "21":
+			is_burning = true
+			velocity.x *= 3
+			velocity.y += randf_range(-100, 100)
+			rotation += randf_range(-360, 360)
+			scale = Vector2(0.5, 0.5)
+			if player.proj_dir[0] == 0:
+				velocity.x = 600
+		"13", "31":
+			is_shocking = true
+			is_burning = true
+			velocity = Vector2.ZERO
+			is_gravity = false
+			scale *= 2
+			$Timer.stop()
+			$Timer.start(20)
 		"20":
 			scale *= 2
 			velocity.y += -100
@@ -132,8 +148,8 @@ func _ready() -> void:
 		if player.proj_dir[1] == 0 and is_gravity == true:
 			velocity.y -= 100
 	else:
-		var regx = 60*6
-		var regy = 60*1
+		var regx = 60*15
+		var regy = 60*4
 		$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:	
@@ -153,6 +169,22 @@ func _physics_process(delta: float) -> void:
 					velocity = saved_velocity
 					velocity.x += player.velocity.x
 					saved_velocity = Vector2.ZERO
+		"13","31":
+			print(get_tree().get_nodes_in_group("Projectile").size())
+			if get_tree().get_nodes_in_group("Projectile").size() > 1:
+				queue_free()
+			var plasma_dir = Input.get_axis("move_left", "move_right")
+			if Input.is_action_pressed("up"):
+				velocity.y += -100*delta
+			if Input.is_action_pressed("crouch"):
+				velocity.y += 100*delta
+			velocity.x = move_toward(velocity.x, 450*plasma_dir, 100*delta)
+			if plasma_dir==0 and not Input.is_action_pressed("crouch") and not Input.is_action_pressed("up"):
+				velocity = Vector2( move_toward(velocity.x, 0, 100*delta),move_toward(velocity.y, 0, 200*delta))
+				if velocity == Vector2.ZERO and $Timer.time_left < 19:
+					queue_free()
+			else:
+				player.velocity = Vector2.ZERO
 		"30":
 			spin_timer += delta
 			var osc = 15*cos(35*(spin_timer))
@@ -235,7 +267,7 @@ func _on_timer_timeout() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20","30","50","80","90", "100":
+			"20","30","13","31","50","80","90", "100":
 				return
 			"70":
 				for  i in range(5):
@@ -251,7 +283,7 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy = area.get_parent() as CharacterBody2D
-		if not id == "30" and not id == "80":
+		if not id == "30" and not id == "80" and not id == "13" and not id == "31":
 			#print(id+ " destroyed")
 			queue_free()
 			if id == "20" or id == "90":

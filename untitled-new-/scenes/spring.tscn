@@ -1,5 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://dwn8h7fx7rlf0"]
+[gd_scene load_steps=5 format=3 uid="uid://dwn8h7fx7rlf0"]
 
+[ext_resource type="Script" uid="uid://dr00l8i5j4hkq" path="res://scripts/spring.gd" id="1_6vrsj"]
 [ext_resource type="Texture2D" uid="uid://c2cfib8r3qflr" path="res://art/level elements V1.png" id="1_ka4py"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_boyml"]
@@ -10,6 +11,8 @@ region = Rect2(64, 128, 64, 64)
 size = Vector2(64, 34)
 
 [node name="Spring" type="Area2D"]
+scale = Vector2(0.25, 0.25)
+script = ExtResource("1_6vrsj")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("AtlasTexture_boyml")
@@ -17,3 +20,5 @@ texture = SubResource("AtlasTexture_boyml")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 15)
 shape = SubResource("RectangleShape2D_ie264")
+
+[node name="RayCast2D" type="RayCast2D" parent="."]

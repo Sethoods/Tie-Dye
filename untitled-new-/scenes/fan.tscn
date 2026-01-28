@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://kp0lm8laxljs"]
 
 [ext_resource type="Texture2D" uid="uid://c2cfib8r3qflr" path="res://art/level elements V1.png" id="1_8vgsl"]
-[ext_resource type="Script" uid="uid://gqhg015eljlb" path="res://scenes/fan.gd" id="1_ib1wi"]
+[ext_resource type="Script" uid="uid://gqhg015eljlb" path="res://scripts/fan.gd" id="1_ib1wi"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7l2ec"]
 atlas = ExtResource("1_8vgsl")
@@ -11,7 +11,7 @@ region = Rect2(64, 0, 64, 64)
 atlas = SubResource("AtlasTexture_7l2ec")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tc01m"]
-size = Vector2(63, 420)
+size = Vector2(104, 420)
 
 [node name="fan" type="Area2D" groups=["Fans"]]
 scale = Vector2(0.25, 0.25)
@@ -24,7 +24,7 @@ script = ExtResource("1_ib1wi")
 texture = SubResource("AtlasTexture_3ml7w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, -191)
+position = Vector2(0, -191)
 shape = SubResource("RectangleShape2D_tc01m")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
