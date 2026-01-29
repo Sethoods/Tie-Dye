@@ -1,8 +1,9 @@
 extends TileMapLayer
 
-var vine_scene = preload("res://scenes/vine.tscn")
-var fan_scene = preload("res://scenes/fan.tscn")
-var spring_scene = preload("res://scenes/spring.tscn")
+const vine_scene = preload("res://scenes/vine.tscn")
+const fan_scene = preload("res://scenes/fan.tscn")
+const spring_scene = preload("res://scenes/spring.tscn")
+const paint_bucket_scene = preload("res://scenes/paintbucket.tscn")
 # Called when the node enters the scene tree for the first time.
 func instantiate_scene(scene: Resource, this_position: Vector2, value, entity : String):
 	var element = scene.instantiate()
@@ -65,6 +66,9 @@ func _ready() -> void:
 			if is_solid and is_solid.get_custom_data("is_flat"):
 				cell_normal = spring_pos-Vector2i(cell)
 		instantiate_scene(spring_scene, spring_pos, cell_normal, "Spring")
+		
+	for bucket_pos in await get_array_tiles(Vector2i(6,4),Vector2i(7,4)):
+		instantiate_scene(paint_bucket_scene, bucket_pos, 0, "Bucket")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

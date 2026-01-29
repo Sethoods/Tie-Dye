@@ -31,4 +31,9 @@ collision_mask = 2
 [node name="player collision" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_jt85c")
 
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.5
+autostart = true
+
 [connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

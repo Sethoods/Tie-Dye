@@ -6,9 +6,10 @@ var base_velocity := Vector2.ZERO
 
 var saved_velocity := Vector2.ZERO
 
-var player : CharacterBody2D
+var player
 var id
 var last_normal = Vector2.ZERO
+var charge := 0.0
 var spin_timer := 0.0
 var angle := 0.0 
 var can_spin = true
@@ -40,21 +41,25 @@ func apply_normal(normal: Vector2, delta: float, cast: RayCast2D) -> Vector2:
 			$PaperRay.target_position = tangent * max(12, velocity.length() * delta * 2)
 			return tangent
 
-func  child_proj():			
-	var droplet = cluster.instantiate()
-	droplet.player = self
-	droplet.id = "E0"
-	get_parent().add_child(droplet)
-	droplet.global_position = position
+func  child_proj(prid: String):			
+	var c_proj = cluster.instantiate()
+	c_proj.player = self
+	c_proj.id = prid
+	get_parent().call_deferred("add_child",c_proj)
+	c_proj.global_position = position
 
 func _ready() -> void:
-	if id != "E0":
+	if id != "E0" and id != "B0":
 		id = str(player.primary_dye) + str(player.secondary_dye)
 		#print(id)
 		base_velocity = Vector2(125*player.proj_dir[0], -200*(player.proj_dir[1]))
 		#print(base_velocity)
 		velocity.x += base_velocity.x + player.velocity.x
 		velocity.y += base_velocity.y
+	elif id == "B0":
+		velocity=Vector2.ZERO
+		is_gravity = false
+		is_burning = true
 	else:
 		velocity.x = randi_range(-300, 300)
 		velocity.y = randi_range(-300, 300)
@@ -63,7 +68,6 @@ func _ready() -> void:
 	match id:
 		"10":
 			is_burning = true
-			is_gravity = false
 			velocity.x *= 2
 			if player.proj_dir[0] == 0:
 				velocity.x = 600
@@ -83,6 +87,19 @@ func _ready() -> void:
 			scale *= 2
 			$Timer.stop()
 			$Timer.start(20)
+		"14", "41":
+			is_burning = true
+			is_healing = true
+		"15", "51":
+			is_burning = true
+			is_gravity = false
+			can_spin = false
+			$Timer.stop()
+			$Timer.start(2.5)
+		"16", "61":
+			charge = player.charge_steam
+			is_gravity = false
+			
 		"20":
 			scale *= 2
 			velocity.y += -100
@@ -140,15 +157,20 @@ func _ready() -> void:
 			pass
 	
 	$ProjSprite.region_enabled = true
-	if id != "E0":
+	if id != "E0" and id != "B0":
 		var regx = 60*player.primary_dye
 		var regy = 60*player.secondary_dye
 		$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)
+		#print($ProjSprite.region_rect)
 		
 		if player.proj_dir[1] == 0 and is_gravity == true:
 			velocity.y -= 100
+	elif id == "B0":
+		var regx = 60*14
+		var regy = 60*1
+		$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)
 	else:
-		var regx = 60*15
+		var regx = 60*14
 		var regy = 60*4
 		$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -175,16 +197,23 @@ func _physics_process(delta: float) -> void:
 				queue_free()
 			var plasma_dir = Input.get_axis("move_left", "move_right")
 			if Input.is_action_pressed("up"):
-				velocity.y += -100*delta
+				velocity.y += -200*delta
 			if Input.is_action_pressed("crouch"):
-				velocity.y += 100*delta
-			velocity.x = move_toward(velocity.x, 450*plasma_dir, 100*delta)
+				velocity.y += 200*delta
+			velocity.x = move_toward(velocity.x, 450*plasma_dir, 200*delta)
 			if plasma_dir==0 and not Input.is_action_pressed("crouch") and not Input.is_action_pressed("up"):
 				velocity = Vector2( move_toward(velocity.x, 0, 100*delta),move_toward(velocity.y, 0, 200*delta))
 				if velocity == Vector2.ZERO and $Timer.time_left < 19:
 					queue_free()
 			else:
 				player.velocity = Vector2.ZERO
+		"15", "51":
+			if $Timer.time_left > 1:
+				scale.y += 5*delta
+			else:
+				scale.y -= 2*delta
+			scale.x += delta
+			velocity.x = move_toward(velocity.x, 0, 50*delta)
 		"30":
 			spin_timer += delta
 			var osc = 15*cos(35*(spin_timer))
@@ -245,6 +274,9 @@ func _physics_process(delta: float) -> void:
 					velocity = proj_tangent*proj_speed
 			else:
 				$Metal.target_position = Vector2(velocity.x/50, velocity.y/50)
+		"B0":
+			scale.y += 0.1
+			position.y -= 10*delta
 		_:
 			pass
 			
@@ -260,18 +292,21 @@ func _physics_process(delta: float) -> void:
 func _on_timer_timeout() -> void:
 	if id == "70":
 		for  i in range(8):
-			child_proj()
+			child_proj("E0")
 	queue_free()
 
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20","30","13","31","50","80","90", "100":
+			"20","30","13","31","15","51","50","80","90", "100", "B0":
 				return
+			"14","41":
+				child_proj("B0")
+				queue_free()
 			"70":
 				for  i in range(5):
-					child_proj()
+					child_proj("E0")
 				queue_free()
 			_:
 				queue_free()

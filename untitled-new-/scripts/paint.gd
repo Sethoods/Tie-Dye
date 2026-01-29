@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-var dye_type = randi()%3+0
+var dye_type = randi()%9#4+0
 const reglength = 32
 var regx = 0
 
@@ -10,6 +10,7 @@ func _ready() -> void:
 	$Sprite2D.region_enabled = true
 	regx = 32*dye_type
 	$Sprite2D.region_rect = Rect2(regx, 0, reglength, reglength)
+	velocity.x += randf_range(-50, 50)
 	#print($Sprite2D.region_rect)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -26,3 +27,7 @@ func _on_area_2d_area_entered(area: Area2D) -> void:
 		var player = area.get_parent()
 		player.power_up(dye_type+1)
 		queue_free()
+
+
+func _on_timer_timeout() -> void:
+	queue_free() # Replace with function body.

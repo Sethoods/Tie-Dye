@@ -52,7 +52,8 @@ var cast : RayCast2D
 
 func colorate(current_dye: Array):
 	if current_dye[0] == DYES["NULL"] and current_dye[1] == DYES["NULL"]:
-		$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.95, 0.95, 0.95, 1.0))
+		$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(1.0, 1.0, 1.0, 1.0))
+		$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 1.0, 1.0, 1.0))	
 	else:
 		match current_dye[0]:
 				DYES["FIRE"]:
@@ -87,8 +88,8 @@ func colorate(current_dye: Array):
 					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.5, 0.0, 0.5, 1.0))
 
 				DYES["MYSTERY"]:
-					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.5, 0.0, 0.5, 1.0))
-					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.5, 0.0, 0.5, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(1.0, 0.0, 1.0, 1.0))
+					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(1.0, 0.0, 1.0, 1.0))
 
 				DYES["METAL"]:
 					$AnimatedSprite2D.material.set("shader_parameter/primary_color", Color(0.6, 0.6, 0.6, 1.0))
@@ -128,7 +129,7 @@ func colorate(current_dye: Array):
 	
 
 func animate(_delta: float) -> void:
-	if velocity.x < 0:
+	if direction < 0 or velocity.x < 0:
 		$AnimatedSprite2D.flip_h = true
 	else:
 		$AnimatedSprite2D.flip_h = false
@@ -288,6 +289,21 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 	elif area.is_in_group("Fans"):
 		cast = area.get_node("RayCast2D") as RayCast2D
 		wind_pushing = true
+	elif area.is_in_group("Springs"):
+		var sprormal = area.get_node("RayCast2D").target_position.normalized()
+		if sprormal.x != 0:
+			velocity.x = -300*sprormal.x
+		if sprormal.y != 0:
+			velocity.y = -300*sprormal.y
+	elif area.is_in_group("Paint Buckets"):
+		if velocity.y <= 0:
+			var bucket = area.get_parent()
+			bucket.paint_bucket()
+		else:
+			primary_dye=DYES["NULL"]
+			secondary_dye=DYES["NULL"]
+			colorate([primary_dye, secondary_dye])
+			print("washed")
 	
 func _on_pv_e_collision_area_exited(area: Area2D) -> void:
 	if area.is_in_group("Fans"):
@@ -421,10 +437,14 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("shoot") and not rolling and shoot_timer <= 0 and not is_hurt and not has_djumped:
 		is_crouching = false
 		var current_dye = [primary_dye, secondary_dye]
+		var charge_steam := 0.0
 		match current_dye:
 			[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
 				SHOOT_DELAY = 0.25
 				$ProjDelay.wait_time = SHOOT_DELAY*0.03
+			[1,4], [4,1]:
+				SHOOT_DELAY = 0.1
+				$ProjDelay.wait_time = SHOOT_DELAY*0.5
 			[2, 0], [8,0]:
 				SHOOT_DELAY = 1
 				$ProjDelay.wait_time = 0.001
@@ -451,6 +471,16 @@ func _physics_process(delta: float) -> void:
 				for i in range(5):
 					$ProjDelay.start()
 					await get_tree().create_timer(0.075).timeout
+			[1,5],[5,1]:
+				while Input.is_action_pressed("shoot"):
+					$ProjDelay.start()
+					await get_tree().create_timer(0.075).timeout
+					
+			[1,6],[6,1]:
+				while Input.is_action_pressed("shoot"):
+					charge_steam += delta
+				$ProjDelay.start()
+				
 			_:
 				$ProjDelay.start()	
 
@@ -486,8 +516,7 @@ func _physics_process(delta: float) -> void:
 	animate(delta)
 	move_and_slide()
 
-
 func _on_proj_delay_timeout() -> void:
-		var current_dye = [primary_dye, secondary_dye]
+		#var current_dye = [primary_dye, secondary_dye]
 		shoot()
 		$ProjDelay.stop()
