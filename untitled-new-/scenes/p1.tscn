@@ -454,7 +454,7 @@ scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
 animation = &"ratatata"
 autoplay = "default"
-frame_progress = 0.72334707
+frame_progress = 0.7000543
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(10, -5)

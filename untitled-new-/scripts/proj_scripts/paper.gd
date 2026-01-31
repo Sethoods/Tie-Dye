@@ -72,8 +72,11 @@ func _ready() -> void:
 			if player.proj_dir[0] == 0:
 				velocity.x = 600
 		"12", "21":
+			can_spin = false
+			global_rotation = asin(player.direction)
+
 			is_burning = true
-			velocity.x *= 3
+			velocity.x *= 4
 			velocity.y += randf_range(-100, 100)
 			rotation += randf_range(-360, 360)
 			scale = Vector2(0.5, 0.5)
@@ -95,11 +98,16 @@ func _ready() -> void:
 			is_gravity = false
 			can_spin = false
 			$Timer.stop()
-			$Timer.start(2.5)
+			$Timer.start(1)
 		"16", "61":
-			charge = player.charge_steam
+			charge = player.proj_charge
+			velocity.x /= 2
+			print(charge)
+			velocity.x += velocity.normalized().x * (50*charge)
+			scale *= charge
 			is_gravity = false
-			
+			$Timer.start($Timer.time_left+charge/2)
+			player.proj_charge = 0.0
 		"20":
 			scale *= 2
 			velocity.y += -100
@@ -128,6 +136,7 @@ func _ready() -> void:
 			$Timer.stop()
 			$Timer.start(5)
 		"60":
+			velocity.x /= 1.25
 			is_freezing = true
 			velocity.x *= 1.15
 		"70":
@@ -208,12 +217,15 @@ func _physics_process(delta: float) -> void:
 			else:
 				player.velocity = Vector2.ZERO
 		"15", "51":
-			if $Timer.time_left > 1:
+			if $Timer.time_left > 0.5:
 				scale.y += 5*delta
 			else:
 				scale.y -= 2*delta
 			scale.x += delta
 			velocity.x = move_toward(velocity.x, 0, 50*delta)
+		"16", "61":
+			velocity.x = move_toward(velocity.x, 0, 50*delta)
+			velocity.y -= 30*delta
 		"30":
 			spin_timer += delta
 			var osc = 15*cos(35*(spin_timer))
@@ -299,7 +311,7 @@ func _on_timer_timeout() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20","30","13","31","15","51","50","80","90", "100", "B0":
+			"20","30","13","31","15","51","16","61","50","80","90", "100", "B0":
 				return
 			"14","41":
 				child_proj("B0")
@@ -318,7 +330,7 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy = area.get_parent() as CharacterBody2D
-		if not id == "30" and not id == "80" and not id == "13" and not id == "31":
+		if not id == "30" and not id == "80" and not id == "13" and not id == "31"  and not id == "15"  and not id == "51"  and not id == "16"  and not id == "61":
 			#print(id+ " destroyed")
 			queue_free()
 			if id == "20" or id == "90":

@@ -39,6 +39,7 @@ var shoot_timer : float = 0.0
 
 var primary_dye : int = DYES["NULL"]
 var secondary_dye : int = DYES["NULL"]
+var proj_charge : float = 0.0
 
 var is_hurt : bool = false
 var hurt_timer : float = 0.0
@@ -253,6 +254,7 @@ func power_up(paint_type: int):
 func shoot():
 	var player_proj = proj_scene.instantiate()
 	player_proj.player = self
+	player_proj.charge = proj_charge
 	get_parent().add_child(player_proj)
 	player_proj.global_position = $Marker2D.global_position
 
@@ -437,13 +439,12 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("shoot") and not rolling and shoot_timer <= 0 and not is_hurt and not has_djumped:
 		is_crouching = false
 		var current_dye = [primary_dye, secondary_dye]
-		var charge_steam := 0.0
 		match current_dye:
 			[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
 				SHOOT_DELAY = 0.25
 				$ProjDelay.wait_time = SHOOT_DELAY*0.03
-			[1,4], [4,1]:
-				SHOOT_DELAY = 0.1
+			[1,4], [4,1], [1,6], [6,1]:
+				SHOOT_DELAY = 0.125
 				$ProjDelay.wait_time = SHOOT_DELAY*0.5
 			[2, 0], [8,0]:
 				SHOOT_DELAY = 1
@@ -477,10 +478,13 @@ func _physics_process(delta: float) -> void:
 					await get_tree().create_timer(0.075).timeout
 					
 			[1,6],[6,1]:
-				while Input.is_action_pressed("shoot"):
-					charge_steam += delta
+				proj_charge = 1
+				while Input.is_action_pressed("shoot") and proj_charge <= 15:
+					@warning_ignore("narrowing_conversion")
+					proj_charge += 10*delta
+					print(proj_charge)
+					await get_tree().create_timer(0.075).timeout
 				$ProjDelay.start()
-				
 			_:
 				$ProjDelay.start()	
 
