@@ -108,6 +108,13 @@ func _ready() -> void:
 			is_gravity = false
 			$Timer.start($Timer.time_left+charge/2)
 			player.proj_charge = 0.0
+		"17", "71":
+			can_spin = false
+			$ProjSprite.rotation += 45
+			velocity.y = 40
+			is_gravity = false
+			$PaperRay.enabled = true
+			$PaperRay.target_position = Vector2(-cos(rotation), sin(rotation))
 		"20":
 			scale *= 2
 			velocity.y += -100
@@ -226,6 +233,17 @@ func _physics_process(delta: float) -> void:
 		"16", "61":
 			velocity.x = move_toward(velocity.x, 0, 50*delta)
 			velocity.y -= 30*delta
+		"17", "71":
+			var normal := Vector2.ZERO
+			if $PaperRay.is_colliding():
+				normal = $PaperRay.get_collision_normal()	
+				var proj_tangent = apply_normal(normal, delta, $PaperRay)
+				var proj_speed = velocity.length()		
+				velocity = proj_tangent*proj_speed
+			#else:
+			#	var proj_tangent = apply_normal(normal, delta, $Metal)
+			#	var proj_speed = velocity.length()		
+			#	velocity = proj_tangent*proj_speed
 		"30":
 			spin_timer += delta
 			var osc = 15*cos(35*(spin_timer))
@@ -311,7 +329,7 @@ func _on_timer_timeout() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20","30","13","31","15","51","16","61","50","80","90", "100", "B0":
+			"20","30","13","31","15","51","16","61","17","71","50","80","90", "100", "B0":
 				return
 			"14","41":
 				child_proj("B0")
