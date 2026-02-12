@@ -37,19 +37,21 @@ var proj_dir : Vector2
 var shooting : bool = false
 var shoot_timer : float = 0.0
 
-var primary_dye : int = DYES["NULL"]
-var secondary_dye : int = DYES["NULL"]
+var primary_dye : int = DYES["MYSTERY"]
+var secondary_dye : int = DYES["METAL"]
 var proj_charge : float = 0.0
 
 var is_hurt : bool = false
 var hurt_timer : float = 0.0
 var health : int = 0
 
+var is_wheel : bool = false
 var is_crouching : bool = false
 var is_climbing : bool = false
 var is_gravity : bool = true
 var wind_pushing : bool = false
 var cast : RayCast2D
+
 
 func colorate(current_dye: Array):
 	if current_dye[0] == DYES["NULL"] and current_dye[1] == DYES["NULL"]:
@@ -134,6 +136,9 @@ func animate(_delta: float) -> void:
 		$AnimatedSprite2D.flip_h = true
 	else:
 		$AnimatedSprite2D.flip_h = false
+		
+	if is_wheel:
+		return
 	if is_climbing:
 		return	
 	if wind_pushing:
@@ -266,7 +271,7 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 		var enem_top : float = area.get_node("Unique").global_position.y - enemshape.size.y / 2 
 		var player_bottom: float = $"PvE collision/Collision normal".global_transform.origin.y + pshape.size.y / 2#(pshape.height + pshape.radius * 2) / 2
 			
-		if not rolling:
+		if not rolling and not is_wheel:
 			if player_bottom - 5 < enem_top or velocity.y > 0:
 				velocity.y = -300
 				print("YES!")
@@ -296,12 +301,13 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 		if sprormal.x != 0:
 			velocity.x = -300*sprormal.x
 		if sprormal.y != 0:
-			velocity.y = -300*sprormal.y
+			velocity.y = -500*sprormal.y
 	elif area.is_in_group("Paint Buckets"):
 		if velocity.y <= 0:
 			var bucket = area.get_parent()
 			bucket.paint_bucket()
 		else:
+			is_wheel = false
 			primary_dye=DYES["NULL"]
 			secondary_dye=DYES["NULL"]
 			colorate([primary_dye, secondary_dye])
@@ -312,7 +318,7 @@ func _on_pv_e_collision_area_exited(area: Area2D) -> void:
 		wind_pushing = false
 	
 func climb_state(state: bool):
-	if state == true and Input.is_action_pressed("up") or Input.is_action_pressed("crouch") and not has_djumped:
+	if state == true and Input.is_action_pressed("up") or Input.is_action_pressed("crouch") and not has_djumped and not is_wheel:
 		is_climbing = true
 	if state == false:
 		is_climbing = false
@@ -338,7 +344,8 @@ func _physics_process(delta: float) -> void:
 		
 	if wind_pushing:
 		has_djumped = false
-		$AnimatedSprite2D.play("jump")
+		if not is_wheel:
+			$AnimatedSprite2D.play("jump")
 		wind_state(wind_pushing, delta)
 	
 	if is_climbing:
@@ -372,6 +379,9 @@ func _physics_process(delta: float) -> void:
 		else:
 			velocity.y = 0
 	
+	if is_on_wall() and is_wheel:
+		velocity.x *= -1
+	
 	if is_hurt:
 		hurt_timer += delta
 		if hurt_timer > 1:
@@ -384,12 +394,22 @@ func _physics_process(delta: float) -> void:
 		velocity.x -= direction*1*delta
 	elif is_on_floor():
 		has_djumped = false
-
-	accel = clamp(accel, MIN_ACCEL, MAX_ACCEL)		
+	if is_wheel:
+		accel = clamp(accel, MIN_ACCEL, MAX_ACCEL*1.2)
+	else:
+		accel = clamp(accel, MIN_ACCEL, MAX_ACCEL)
+	
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay action
 	var prev_dir := direction
 	direction = Input.get_axis("move_left", "move_right")
+	if is_wheel:
+		if Input.is_action_pressed("move_right"):
+			direction = 1
+		elif Input.is_action_pressed("move_left"):
+			direction = -1
+		else :
+			direction = prev_dir
 	if direction == 0:
 		direction = prev_dir
 		prev_dir = 0
@@ -397,9 +417,21 @@ func _physics_process(delta: float) -> void:
 		if not rolling and not is_climbing:
 			var max_movement_speed = SPEED * accel
 			velocity.x = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED * 5) * delta) 
+			if is_wheel:
+				if direction == 1:
+					if velocity.x < 0:
+						accel = 0
+					velocity.x = max_movement_speed
+				else:
+					if velocity.x > 0:
+						accel = 0
+					velocity.x = -max_movement_speed
 			if is_crouching:
 				velocity.x /= 1.5
-			accel += RATE_GROWTH_ACCEL*delta
+			if is_wheel:
+				accel += RATE_GROWTH_ACCEL*delta*10
+			else:
+				accel += RATE_GROWTH_ACCEL*delta
 		elif is_climbing:
 			velocity.x += 100*delta*direction
 		else:
@@ -407,10 +439,10 @@ func _physics_process(delta: float) -> void:
 				if velocity.x >= 0.1 and direction < 0 or velocity.x <= 0.1 and direction > 0 :
 					rolling = false
 			else:
-				velocity.x -= -velocity.x*delta
+				velocity.x = move_toward(velocity.x, 0, delta/2)
 			
 #		print("%s"%[slope_dir])
-	elif not rolling and is_on_floor() or is_climbing:
+	elif not rolling and is_on_floor() or is_climbing and not is_wheel:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		accel = move_toward(accel, 0, RATE_GROWTH_ACCEL*100*delta)
 		
@@ -418,13 +450,16 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and is_on_floor() and not is_crouching:
 		is_climbing = false
 		is_gravity = true
-		velocity.y = JUMP_VELOCITY-((accel-1)*7.5)
+		if is_wheel:
+			velocity.y = JUMP_VELOCITY/1.5
+		else:
+			velocity.y = JUMP_VELOCITY-((accel-1)*7.5)
 		velocity.x = velocity.x
 		rolling = false
 		if is_hurt:
 			hurt_timer = 0
 			is_hurt = false
-	elif Input.is_action_just_pressed("jump") and not is_on_floor() and not has_djumped and not is_hurt:
+	elif Input.is_action_just_pressed("jump") and not is_on_floor() and not has_djumped and not is_hurt and not is_wheel:
 		is_climbing = false
 		is_gravity = true
 		velocity.y = JUMP_VELOCITY/2
@@ -437,62 +472,71 @@ func _physics_process(delta: float) -> void:
 			shoot_timer = 0
 	
 	if Input.is_action_just_pressed("shoot") and not rolling and shoot_timer <= 0 and not is_hurt and not has_djumped:
-		is_crouching = false
-		var current_dye = [primary_dye, secondary_dye]
-		match current_dye:
-			[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
-				SHOOT_DELAY = 0.25
-				$ProjDelay.wait_time = SHOOT_DELAY*0.03
-			[1,4], [4,1], [1,6], [6,1]:
-				SHOOT_DELAY = 0.125
-				$ProjDelay.wait_time = SHOOT_DELAY*0.5
-			[2, 0], [8,0]:
-				SHOOT_DELAY = 1
-				$ProjDelay.wait_time = 0.001
-			[10, 0], [9,0]:
-				SHOOT_DELAY = .5
-				$ProjDelay.wait_time = SHOOT_DELAY*0.03
-			_:
-				SHOOT_DELAY = 0.25
-				$ProjDelay.wait_time = SHOOT_DELAY*0.03
-		shooting = true
-		match current_dye:
-			[2,0]:
-				$AnimatedSprite2D.play("spinthrow")
-			[1,2],[2,1]:
-				$AnimatedSprite2D.play("ratatata")
-			_:
-				if velocity.x == 0:
-					$AnimatedSprite2D.play("throw")
-				else:
-					$AnimatedSprite2D.play("movethrow")
-		
-		match current_dye:
-			[1,2],[2,1]:
-				for i in range(5):
+		if is_wheel:
+			is_wheel = not is_wheel
+		else:
+			is_crouching = false
+			var current_dye = [primary_dye, secondary_dye]
+			match current_dye:
+				[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
+					SHOOT_DELAY = 0.25
+					$ProjDelay.wait_time = SHOOT_DELAY*0.03
+				[1,4], [4,1], [1,6], [6,1]:
+					SHOOT_DELAY = 0.125
+					$ProjDelay.wait_time = SHOOT_DELAY*0.5
+				[2, 0], [8,0]:
+					SHOOT_DELAY = 1
+					$ProjDelay.wait_time = 0.001
+				[10, 0], [9,0]:
+					SHOOT_DELAY = .5
+					$ProjDelay.wait_time = SHOOT_DELAY*0.03
+				_:
+					SHOOT_DELAY = 0.25
+					$ProjDelay.wait_time = SHOOT_DELAY*0.03
+			shooting = true
+			match current_dye:
+				[2,0]:
+					$AnimatedSprite2D.play("spinthrow")
+				[1,2],[2,1]:
+					$AnimatedSprite2D.play("ratatata")
+				_:
+					if velocity.x == 0:
+						$AnimatedSprite2D.play("throw")
+					else:
+						$AnimatedSprite2D.play("movethrow")
+			
+			match current_dye:
+				[1,2],[2,1]:
+					for i in range(5):
+						$ProjDelay.start()
+						await get_tree().create_timer(0.075).timeout
+				[1,5],[5,1]:
+					while Input.is_action_pressed("shoot"):
+						$ProjDelay.start()
+						await get_tree().create_timer(0.075).timeout
+						
+				[1,6],[6,1]:
+					proj_charge = 1
+					while Input.is_action_pressed("shoot") and proj_charge <= 15:
+						proj_charge += 10*delta
+						print(proj_charge)
+						await get_tree().create_timer(0.075).timeout
 					$ProjDelay.start()
-					await get_tree().create_timer(0.075).timeout
-			[1,5],[5,1]:
-				while Input.is_action_pressed("shoot"):
-					$ProjDelay.start()
-					await get_tree().create_timer(0.075).timeout
-					
-			[1,6],[6,1]:
-				proj_charge = 1
-				while Input.is_action_pressed("shoot") and proj_charge <= 15:
-					@warning_ignore("narrowing_conversion")
-					proj_charge += 10*delta
-					print(proj_charge)
-					await get_tree().create_timer(0.075).timeout
-				$ProjDelay.start()
-			_:
-				$ProjDelay.start()	
+				[1,8],[8,1]:
+					is_wheel = true
+					$AnimatedSprite2D.play("wheel_temp")
+					if Input.is_action_pressed("crouch"):
+						velocity.y = 300
+					elif Input.is_action_pressed("up"):
+						velocity.y = -300
+				_:
+					$ProjDelay.start()	
 
 		
 		
 	if Input.is_action_just_pressed("crouch") and is_on_floor() and velocity.x != 0 and not is_climbing:
 		rolling = true
-	elif Input.is_action_pressed("crouch") and not shooting and not has_djumped and not rolling and not is_climbing: 
+	elif Input.is_action_pressed("crouch") and not shooting and not has_djumped and not rolling and not is_climbing and not is_wheel: 
 		is_crouching = true
 		$AnimatedSprite2D.play("duck")
 	elif Input.is_action_pressed("crouch") and is_climbing:

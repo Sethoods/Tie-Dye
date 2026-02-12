@@ -1,9 +1,10 @@
-[gd_scene load_steps=53 format=3 uid="uid://c788sfrv8kllu"]
+[gd_scene load_steps=54 format=3 uid="uid://c788sfrv8kllu"]
 
 [ext_resource type="Script" uid="uid://bdpuc04hrh0gk" path="res://scripts/p_1.gd" id="1_vokph"]
 [ext_resource type="Texture2D" uid="uid://dch2mqi2a84hp" path="res://art/TieDye Spritesheets V1.png" id="2_6u33n"]
 [ext_resource type="Shader" uid="uid://w0xg2jtmcysc" path="res://art/shaders/tiecolor.gdshader" id="2_qmb28"]
 [ext_resource type="Script" uid="uid://ch1pmqey7oqc3" path="res://scripts/marker_2d.gd" id="3_6u33n"]
+[ext_resource type="Texture2D" uid="uid://bp6io3ws5bkh0" path="res://art/wheel.png" id="4_m01ht"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m01ht"]
 shader = ExtResource("2_qmb28")
@@ -428,6 +429,14 @@ animations = [{
 "loop": false,
 "name": &"throw",
 "speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_m01ht")
+}],
+"loop": true,
+"name": &"wheel_temp",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vokph"]
@@ -452,9 +461,9 @@ material = SubResource("ShaderMaterial_m01ht")
 position = Vector2(0, -0.25000012)
 scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"ratatata"
+animation = &"wheel_temp"
 autoplay = "default"
-frame_progress = 0.7000543
+frame_progress = 0.6219523
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(10, -5)

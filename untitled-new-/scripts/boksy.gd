@@ -121,10 +121,10 @@ func player_collided(collision: String) -> void:
 		stunned = true
 		stun_timer = 1.22
 
-func proj_collided(id: String) -> void:
+func proj_collided(id: String, vel: Vector2) -> void:
 	stunned = true
 	stun_timer = .25
-	velocity.x *= -0.43
+	velocity.x += 50*vel.normalized().x
 	velocity.y = -200
 	match id:
 		"10":
@@ -158,6 +158,10 @@ func proj_collided(id: String) -> void:
 			health -= 2
 		"100":
 			health -= 3
+		"B00M":
+			velocity.x += 2*velocity.length()
+			velocity.y = -400
+			health -= 1
 		_:
 			pass
 

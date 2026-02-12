@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://mesvu7udmqxi"]
+[gd_scene load_steps=7 format=3 uid="uid://mesvu7udmqxi"]
 
 [ext_resource type="Script" uid="uid://bn3cslrt5aiwd" path="res://scripts/proj_scripts/paper.gd" id="1_vas6c"]
 [ext_resource type="Texture2D" uid="uid://rkglub7hv82c" path="res://art/TieDye Projectiles V1.png" id="2_cbjgq"]
+[ext_resource type="Texture2D" uid="uid://28ulfuikdt32" path="res://art/explosion.png" id="3_cbjgq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nwabi"]
 atlas = ExtResource("2_cbjgq")
@@ -9,6 +10,9 @@ region = Rect2(0, 0, 900, 900)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vas6c"]
 size = Vector2(5.1819806, 19)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vas6c"]
+radius = 48.0
 
 [node name="paper" type="Area2D" groups=["Projectile"]]
 collision_layer = 8
@@ -37,6 +41,22 @@ target_position = Vector2(-10, 0)
 enabled = false
 target_position = Vector2(0, 23)
 
+[node name="AOE" type="Area2D" parent="."]
+visible = false
+collision_layer = 8
+collision_mask = 4
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AOE"]
+shape = SubResource("CircleShape2D_vas6c")
+
+[node name="Sprite2D" type="Sprite2D" parent="AOE"]
+scale = Vector2(1.25, 1.25)
+texture = ExtResource("3_cbjgq")
+
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="area_entered" from="AOE" to="." method="_on_aoe_area_entered"]

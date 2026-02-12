@@ -11,8 +11,8 @@
 script = ExtResource("1_ihyw0")
 
 [node name="background" type="Sprite2D" parent="."]
-position = Vector2(54.500134, -400.49997)
-scale = Vector2(12.969111, 12.427835)
+position = Vector2(74.999954, -278.00003)
+scale = Vector2(10.409266, 10.4433)
 texture = ExtResource("2_dtrk2")
 
 [node name="Level_test" parent="." instance=ExtResource("1_ybe71")]

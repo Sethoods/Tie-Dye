@@ -8,6 +8,10 @@
 
 config_version=5
 
+[accessibility]
+
+general/updates_per_second=10
+
 [application]
 
 config/name="TieDye"
@@ -77,6 +81,10 @@ up={
 2d_physics/layer_2="Player"
 2d_physics/layer_3="Enemies"
 2d_physics/layer_4="Projec"
+
+[physics]
+
+2d/updates_per_second=10
 
 [rendering]
 

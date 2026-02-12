@@ -21,4 +21,5 @@ func make_vine():
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("friendly hitbox"):
 		var player = area.get_parent()
-		player.climb_state(true)
+		if player.is_wheel == false:
+			player.climb_state(true)

@@ -12,13 +12,23 @@ var last_normal = Vector2.ZERO
 var charge := 0.0
 var spin_timer := 0.0
 var angle := 0.0 
+var hit_state = false
 var can_spin = true
 var is_burning = false
 var is_freezing = false
 var is_shocking = false
 var is_healing = false
 var is_gravity = true
+var is_collide = false
 @export var cluster = preload("res://scenes/paper.tscn")
+
+func explode():
+		velocity = Vector2.ZERO
+		hit_state = true
+		$AOE.visible = true
+		$AOE.set_deferred("monitoring", true)
+		await get_tree().create_timer(0.25).timeout
+		queue_free()
 
 func apply_normal(normal: Vector2, delta: float, cast: RayCast2D) -> Vector2:
 			if normal != Vector2.ZERO:
@@ -38,7 +48,8 @@ func apply_normal(normal: Vector2, delta: float, cast: RayCast2D) -> Vector2:
 				
 			if tangent.dot(velocity) < 0:
 					tangent = -tangent
-			$PaperRay.target_position = tangent * max(12, velocity.length() * delta * 2)
+			if cast != $PaperRay:
+				$PaperRay.target_position = tangent * max(12, velocity.length() * delta * 2)
 			return tangent
 
 func  child_proj(prid: String):			
@@ -68,12 +79,15 @@ func _ready() -> void:
 	match id:
 		"10":
 			is_burning = true
+			is_gravity = false
 			velocity.x *= 2
 			if player.proj_dir[0] == 0:
 				velocity.x = 600
+			if player.proj_dir[1] == 0:
+				velocity.y = 0
 		"12", "21":
 			can_spin = false
-			global_rotation = asin(player.direction)
+			global_rotation = asin (player.direction)
 
 			is_burning = true
 			velocity.x *= 4
@@ -102,7 +116,7 @@ func _ready() -> void:
 		"16", "61":
 			charge = player.proj_charge
 			velocity.x /= 2
-			print(charge)
+			#print(charge)
 			velocity.x += velocity.normalized().x * (50*charge)
 			scale *= charge
 			is_gravity = false
@@ -112,9 +126,23 @@ func _ready() -> void:
 			can_spin = false
 			$ProjSprite.rotation += 45
 			velocity.y = 40
+			velocity.x /= 10
 			is_gravity = false
 			$PaperRay.enabled = true
-			$PaperRay.target_position = Vector2(-cos(rotation), sin(rotation))
+			$PaperRay.target_position = Vector2(0, 10)
+			$Metal.enabled = true
+			$Metal.target_position = Vector2(10,0)
+			$Timer.stop()
+			$Timer.start(7)
+		"19", "91":
+			is_burning = true
+			$PaperRay.enabled = true
+			$PaperRay.target_position = Vector2(0, 50)
+			$PaperRay.set_collision_mask_value(1, false)
+			$PaperRay.set_collision_mask_value(3, true)
+		"110", "101":
+			$Timer.stop()
+			$Timer.start(1)
 		"20":
 			scale *= 2
 			velocity.y += -100
@@ -160,6 +188,9 @@ func _ready() -> void:
 			saved_velocity = velocity
 			$Timer.stop()
 			$Timer.start(7)
+		"109", "910":
+			velocity.y -= 150
+			$Timer.start(10)
 		"100":
 			$Metal.enabled = true
 			$PaperRay.enabled = true
@@ -184,6 +215,7 @@ func _ready() -> void:
 	elif id == "B0":
 		var regx = 60*14
 		var regy = 60*1
+		can_spin = false
 		$ProjSprite.region_rect = Rect2(regx, regy, 60, 60)
 	else:
 		var regx = 60*14
@@ -208,7 +240,7 @@ func _physics_process(delta: float) -> void:
 					velocity.x += player.velocity.x
 					saved_velocity = Vector2.ZERO
 		"13","31":
-			print(get_tree().get_nodes_in_group("Projectile").size())
+			#print(get_tree().get_nodes_in_group("Projectile").size())
 			if get_tree().get_nodes_in_group("Projectile").size() > 1:
 				queue_free()
 			var plasma_dir = Input.get_axis("move_left", "move_right")
@@ -236,14 +268,21 @@ func _physics_process(delta: float) -> void:
 		"17", "71":
 			var normal := Vector2.ZERO
 			if $PaperRay.is_colliding():
+				is_gravity = false
 				normal = $PaperRay.get_collision_normal()	
 				var proj_tangent = apply_normal(normal, delta, $PaperRay)
-				var proj_speed = velocity.length()		
+				var proj_speed = velocity.length()+20		
 				velocity = proj_tangent*proj_speed
-			#else:
-			#	var proj_tangent = apply_normal(normal, delta, $Metal)
-			#	var proj_speed = velocity.length()		
-			#	velocity = proj_tangent*proj_speed
+			elif velocity.y <= 0:
+				is_gravity = true
+				if velocity.y > 0:
+					velocity.y -= 10
+		"19", "91":
+			$PaperRay.target_position = Vector2(cos(Time.get_ticks_msec()), sin(Time.get_ticks_msec()))*150
+			if $PaperRay.is_colliding():
+				var collision_point = $PaperRay.get_collision_point()
+				velocity = (collision_point-global_position).normalized() * 200
+
 		"30":
 			spin_timer += delta
 			var osc = 15*cos(35*(spin_timer))
@@ -275,7 +314,7 @@ func _physics_process(delta: float) -> void:
 		"90":
 			spin_timer += delta * player.velocity.x
 			if $Timer.time_left >1:
-				angle += delta * 20
+				angle += delta * 5
 				position.y = player.global_position.y + sin(angle) * (30 + abs(player.velocity.x)/5)
 				position.x = player.global_position.x + cos(angle) * (20 + abs(player.velocity.x)/3)
 				is_gravity = false
@@ -285,6 +324,17 @@ func _physics_process(delta: float) -> void:
 					velocity = saved_velocity
 					velocity.x += player.velocity.x
 					saved_velocity = Vector2.ZERO
+		"910", "109":
+			if $Timer.time_left < $Timer.wait_time/1.075 and not is_collide:
+				is_gravity = true
+				can_spin = false
+				$ProjSprite.rotation = 90
+				velocity = Vector2(0, 300)
+			if is_collide:
+				can_spin = false
+				$ProjSprite.rotation = 90
+				is_gravity = false
+				velocity = Vector2(0,25)
 		"100":
 			var normal := Vector2.ZERO
 					
@@ -305,25 +355,43 @@ func _physics_process(delta: float) -> void:
 			else:
 				$Metal.target_position = Vector2(velocity.x/50, velocity.y/50)
 		"B0":
-			scale.y += 0.1
-			position.y -= 10*delta
+			var randii = randi_range(1,10)
+			if randii < 9:
+				scale.y += 0.1
+				global_position.y -= 35*delta
+			else: 
+				scale.y -= 0.1
+				global_position.y += 35*delta
 		_:
 			pass
 			
-	if is_gravity:
+	if is_gravity and $PaperRay.is_colliding() == false:
 		velocity.y += 250  * delta
 	if is_gravity or id == "10" or id == "40":
 		pass
 	if can_spin:
 		$ProjSprite.rotation_degrees += 2000*delta
 		$CollisionShape2D.rotation_degrees += 2000*delta
-	position += velocity * delta
+	if not id == "101" or id == "110":
+		position += velocity * delta
+	else:
+		if hit_state == false:
+			position += velocity * delta
+		else:
+			velocity = Vector2.ZERO
 
 func _on_timer_timeout() -> void:
-	if id == "70":
-		for  i in range(8):
-			child_proj("E0")
-	queue_free()
+	match id:
+		"70":
+			for  i in range(8):
+				child_proj("E0")
+				queue_free()
+		"110", "101":
+			explode()
+		_:
+			queue_free()
+
+	
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -334,10 +402,15 @@ func _on_body_entered(body: Node2D) -> void:
 			"14","41":
 				child_proj("B0")
 				queue_free()
+			"110","101":
+				explode()
 			"70":
 				for  i in range(5):
 					child_proj("E0")
 				queue_free()
+			"910", "109":
+				if not is_collide:
+					is_collide = true
 			_:
 				queue_free()
 	if id == "80":
@@ -348,12 +421,13 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy = area.get_parent() as CharacterBody2D
-		if not id == "30" and not id == "80" and not id == "13" and not id == "31"  and not id == "15"  and not id == "51"  and not id == "16"  and not id == "61":
+		if not id == "30" and not id == "80" and not id == "13" and not id == "31"  and not id == "15"  and not id == "51"  and not id == "16"  and not id == "61" and not id == "19" and not id == "91":
 			#print(id+ " destroyed")
 			queue_free()
 			if id == "20" or id == "90":
 				player.shooting = false
 				player.shoot_timer = 0
+
 		if is_freezing:
 			boksy.freeze()
 			queue_free()
@@ -364,9 +438,26 @@ func _on_area_entered(area: Area2D) -> void:
 
 		if is_healing:
 			player.health += boksy.health /4
-		if id == "70":
+		if id == "70" or id == "17" or id == " 71":
 			for  i in range(8):
-					call_deferred("child_proj")
+					call_deferred("child_proj", "E0")
+		if id == "110" or id == "101":
+			explode()
 			
 			
-		boksy.proj_collided(id)
+		boksy.proj_collided(id, velocity)
+
+
+func _on_aoe_area_entered(area: Area2D) -> void:
+	if area.is_in_group("Enemy Hitboxes"):
+		var boksy = area.get_parent() as CharacterBody2D
+		boksy.proj_collided("B00M")
+
+
+func _on_body_exited(body: Node2D) -> void:
+	if body is TileMapLayer:
+		match id:
+			"910", "109":
+				is_collide = false
+			_:
+				pass
