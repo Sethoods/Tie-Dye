@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://c788sfrv8kllu"]
+[gd_scene load_steps=57 format=3 uid="uid://c788sfrv8kllu"]
 
 [ext_resource type="Script" uid="uid://bdpuc04hrh0gk" path="res://scripts/p_1.gd" id="1_vokph"]
 [ext_resource type="Texture2D" uid="uid://dch2mqi2a84hp" path="res://art/TieDye Spritesheets V1.png" id="2_6u33n"]
@@ -172,6 +172,18 @@ region = Rect2(800, 200, 100, 100)
 [sub_resource type="AtlasTexture" id="AtlasTexture_3sp5c"]
 atlas = ExtResource("2_6u33n")
 region = Rect2(1200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2nug1"]
+atlas = ExtResource("2_6u33n")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ogg6a"]
+atlas = ExtResource("2_6u33n")
+region = Rect2(1500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_614w1"]
+atlas = ExtResource("2_6u33n")
+region = Rect2(600, 200, 100, 100)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xunl5"]
 atlas = ExtResource("2_6u33n")
@@ -406,15 +418,24 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 2.0,
 "texture": SubResource("AtlasTexture_067jh")
 }, {
-"duration": 1.0,
+"duration": 1.5,
 "texture": SubResource("AtlasTexture_3sp5c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2nug1")
+}, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_ogg6a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_614w1")
 }],
 "loop": false,
 "name": &"swipe",
-"speed": 5.0
+"speed": 15.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -461,9 +482,10 @@ material = SubResource("ShaderMaterial_m01ht")
 position = Vector2(0, -0.25000012)
 scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"wheel_temp"
+animation = &"swipe"
 autoplay = "default"
-frame_progress = 0.6219523
+frame = 4
+frame_progress = 1.0
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(10, -5)

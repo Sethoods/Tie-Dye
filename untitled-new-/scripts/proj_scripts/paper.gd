@@ -12,14 +12,15 @@ var last_normal = Vector2.ZERO
 var charge := 0.0
 var spin_timer := 0.0
 var angle := 0.0 
-var hit_state = false
-var can_spin = true
-var is_burning = false
-var is_freezing = false
-var is_shocking = false
-var is_healing = false
-var is_gravity = true
-var is_collide = false
+var hit_state := false
+var can_spin := true
+var is_burning := false
+var is_freezing := false
+var is_shocking := false
+var is_healing := false
+var is_gravity := true
+var is_collide := false
+var explosive := false
 @export var cluster = preload("res://scenes/paper.tscn")
 
 func explode():
@@ -141,6 +142,7 @@ func _ready() -> void:
 			$PaperRay.set_collision_mask_value(1, false)
 			$PaperRay.set_collision_mask_value(3, true)
 		"110", "101":
+			explosive = true
 			$Timer.stop()
 			$Timer.start(1)
 		"20":
@@ -150,6 +152,10 @@ func _ready() -> void:
 			saved_velocity = velocity
 			$Timer.stop()
 			$Timer.start(7)
+		"210", "102":
+			can_spin = false
+			scale *= 2
+			$Timer.start(0.5)
 		"30":
 			is_gravity = false
 			is_shocking = true
@@ -282,7 +288,18 @@ func _physics_process(delta: float) -> void:
 			if $PaperRay.is_colliding():
 				var collision_point = $PaperRay.get_collision_point()
 				velocity = (collision_point-global_position).normalized() * 200
-
+		"210", "102":
+			spin_timer += delta*10
+			if spin_timer >= 2:
+				spin_timer = 2
+			if player.direction > 0:
+				rotation = min(135, spin_timer)
+				rotation = clamp(rotation, 0, 135)
+			else:
+				rotation = max(-135, -1*spin_timer)
+				rotation = clamp(rotation, -135, 0)
+			position.x = (player.position.x + player.direction*spin_timer*10) + (player.direction*spin_timer)
+			position.y = player.global_position.y + (20 * log(spin_timer*3) -30)
 		"30":
 			spin_timer += delta
 			var osc = 15*cos(35*(spin_timer))
@@ -325,7 +342,7 @@ func _physics_process(delta: float) -> void:
 					velocity.x += player.velocity.x
 					saved_velocity = Vector2.ZERO
 		"910", "109":
-			if $Timer.time_left < $Timer.wait_time/1.075 and not is_collide:
+			if $Timer.time_left < $Timer.wait_time/1.05 and not is_collide:
 				is_gravity = true
 				can_spin = false
 				$ProjSprite.rotation = 90
@@ -397,7 +414,7 @@ func _on_timer_timeout() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20","30","13","31","15","51","16","61","17","71","50","80","90", "100", "B0":
+			"20","210","102" ,"30","13","31","15","51","16","61","17","71","50","80","90", "100", "B0":
 				return
 			"14","41":
 				child_proj("B0")
@@ -421,7 +438,9 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy = area.get_parent() as CharacterBody2D
-		if not id == "30" and not id == "80" and not id == "13" and not id == "31"  and not id == "15"  and not id == "51"  and not id == "16"  and not id == "61" and not id == "19" and not id == "91":
+		if explosive:
+			explode()
+		if not id == "30" and not id == "80" and not id == "13" and not id == "31"  and not id == "15"  and not id == "51"  and not id == "16"  and not id == "61" and not id == "19" and not id == "91" and not id== "110" and not id == "101" and not id == "210" and not id == "102":
 			#print(id+ " destroyed")
 			queue_free()
 			if id == "20" or id == "90":
@@ -441,8 +460,6 @@ func _on_area_entered(area: Area2D) -> void:
 		if id == "70" or id == "17" or id == " 71":
 			for  i in range(8):
 					call_deferred("child_proj", "E0")
-		if id == "110" or id == "101":
-			explode()
 			
 			
 		boksy.proj_collided(id, velocity)
@@ -451,7 +468,7 @@ func _on_area_entered(area: Area2D) -> void:
 func _on_aoe_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy = area.get_parent() as CharacterBody2D
-		boksy.proj_collided("B00M")
+		boksy.proj_collided("B00M", velocity)
 
 
 func _on_body_exited(body: Node2D) -> void:

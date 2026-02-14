@@ -37,8 +37,8 @@ var proj_dir : Vector2
 var shooting : bool = false
 var shoot_timer : float = 0.0
 
-var primary_dye : int = DYES["MYSTERY"]
-var secondary_dye : int = DYES["METAL"]
+var primary_dye : int = DYES["METAL"]
+var secondary_dye : int = DYES["COMBAT"]
 var proj_charge : float = 0.0
 
 var is_hurt : bool = false
@@ -480,7 +480,7 @@ func _physics_process(delta: float) -> void:
 			match current_dye:
 				[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
 					SHOOT_DELAY = 0.25
-					$ProjDelay.wait_time = SHOOT_DELAY*0.03
+					$ProjDelay.wait_time = SHOOT_DELAY*0.15
 				[1,4], [4,1], [1,6], [6,1]:
 					SHOOT_DELAY = 0.125
 					$ProjDelay.wait_time = SHOOT_DELAY*0.5
@@ -489,16 +489,22 @@ func _physics_process(delta: float) -> void:
 					$ProjDelay.wait_time = 0.001
 				[10, 0], [9,0]:
 					SHOOT_DELAY = .5
-					$ProjDelay.wait_time = SHOOT_DELAY*0.03
+					$ProjDelay.wait_time = SHOOT_DELAY*0.15
+				[2,10],[10,2]:
+					SHOOT_DELAY = 0.5
+					$ProjDelay.wait_time = SHOOT_DELAY*0.3
 				_:
 					SHOOT_DELAY = 0.25
-					$ProjDelay.wait_time = SHOOT_DELAY*0.03
+					$ProjDelay.wait_time = SHOOT_DELAY*0.15
 			shooting = true
 			match current_dye:
 				[2,0]:
 					$AnimatedSprite2D.play("spinthrow")
 				[1,2],[2,1]:
 					$AnimatedSprite2D.play("ratatata")
+				[2,10],[10,2]:
+					
+					$AnimatedSprite2D.play("swipe")
 				_:
 					if velocity.x == 0:
 						$AnimatedSprite2D.play("throw")

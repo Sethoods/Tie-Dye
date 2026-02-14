@@ -133,6 +133,8 @@ func proj_collided(id: String, vel: Vector2) -> void:
 			velocity.x -= 2*velocity.length()
 			velocity.y = -400
 			health -= 9
+		"210", "102":
+			stun_timer += 2
 		"30":
 			health -= 1
 			stun_timer += 1
