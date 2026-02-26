@@ -14,6 +14,8 @@ var shock_timer : float = 0.5
 @export var frozen = preload("res://scenes/frozemed.tscn")
 var effect_temp = preload("res://art/lightningfekt ph.png")
 var time_extant = 0
+var cast
+var wind_pushing := false
 
 func shock(numero: int, original_pos: Vector2):
 	if numero > 3:
@@ -62,6 +64,13 @@ func die():
 	stun_timer = 50
 	velocity = Vector2.ZERO
 
+func  wind_state(state: bool, delta):
+	if state == true:
+		velocity.y += -30*cast.target_position.y*delta
+		velocity.x += -10*cast.target_position.x*delta
+	if state == false:
+		pass
+
 func _physics_process(delta: float) -> void:
 	time_extant += delta
 	if health <= 0:
@@ -70,8 +79,11 @@ func _physics_process(delta: float) -> void:
 	floor_max_angle=PI/2.1
 
 	velocity.y += get_gravity().y * delta
+	wind_state(wind_pushing, delta)
+
 	if stunned == false:
 		velocity.x = speed * direction
+		
 		
 		var ahead_cell = tilemap.local_to_map(global_position + Vector2(direction * 8, 0))
 
@@ -173,4 +185,13 @@ func _on_aoe_area_entered(area: Area2D) -> void:
 		boksy.shock(shocks + 1, position)
 		$AOE.set_deferred("monitoring", false)
 		await  get_tree().create_timer(0.1).timeout
+	elif area.is_in_group("Fans"):
+		cast = area.get_node("RayCast2D") as RayCast2D
+		wind_pushing = true
+
 		#print("chain ", boksy.name)
+
+
+func _on_aoe_area_exited(area: Area2D) -> void:
+	if area.is_in_group("Fans"):
+		wind_pushing = false

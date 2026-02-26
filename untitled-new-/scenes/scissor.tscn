@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://cvdwor2xn3ob0"]
+
+[ext_resource type="Script" uid="uid://ml52roaikgk0" path="res://scripts/scissor.gd" id="1_j3cs6"]
+[ext_resource type="Texture2D" uid="uid://c2cfib8r3qflr" path="res://art/level elements V1.png" id="2_sx31p"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8yypt"]
+atlas = ExtResource("2_sx31p")
+region = Rect2(128, 0, 64, 192)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_j3cs6"]
+radius = 18.0
+height = 56.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sx31p"]
+size = Vector2(16, 144)
+
+[node name="StaticBody2D" type="StaticBody2D"]
+scale = Vector2(0.36, 0.36)
+script = ExtResource("1_j3cs6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(2, -65)
+texture = SubResource("AtlasTexture_8yypt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_j3cs6")
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(8.000001, -78.00001)
+scale = Vector2(1.0000001, 1.0000001)
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-4.7683716e-07, 7.6293945e-06)
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("RectangleShape2D_sx31p")

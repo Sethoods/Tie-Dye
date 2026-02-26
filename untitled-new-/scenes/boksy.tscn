@@ -28,6 +28,7 @@ radius = 128.24976
 
 [node name="boksy" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 4
+collision_mask = 3
 script = ExtResource("1_u7pnd")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -65,3 +66,4 @@ shape = SubResource("CircleShape2D_0clhr")
 
 [connection signal="area_entered" from="EvP collision" to="." method="_on_ev_p_collision_area_entered"]
 [connection signal="area_entered" from="AOE" to="." method="_on_aoe_area_entered"]
+[connection signal="area_exited" from="AOE" to="." method="_on_aoe_area_exited"]

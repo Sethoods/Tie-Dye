@@ -162,6 +162,16 @@ func _ready() -> void:
 			velocity.x *= 2
 			if player.proj_dir[0] == 0:
 				velocity.x = 200
+		"310","103":
+			can_spin = false
+			is_shocking = true
+			$ProjSprite.rotation += 30
+			$CollisionShape2D.rotation += 90
+			velocity.x += randf_range(-100,100)
+			velocity.y += randf_range(-100,100)
+			$PaperRay.enabled = true
+			$PaperRay.target_position = Vector2(0, 10)
+			$Timer.start(8)
 		"40":
 			is_gravity = false
 			velocity.x /= 1.2
@@ -262,12 +272,13 @@ func _physics_process(delta: float) -> void:
 			else:
 				player.velocity = Vector2.ZERO
 		"15", "51":
+			var randii = randf_range(1,10)
 			if $Timer.time_left > 0.5:
-				scale.y += 5*delta
+				scale.y += (5+randii)*delta
 			else:
-				scale.y -= 2*delta
+				scale.y -= (2+randii)*delta
 			scale.x += delta
-			velocity.x = move_toward(velocity.x, 0, 50*delta)
+			velocity.x = move_toward(velocity.x, 0, 60*delta)
 		"16", "61":
 			velocity.x = move_toward(velocity.x, 0, 50*delta)
 			velocity.y -= 30*delta
@@ -304,6 +315,24 @@ func _physics_process(delta: float) -> void:
 			spin_timer += delta
 			var osc = 15*cos(35*(spin_timer))
 			position.y += osc
+		"310","103":
+			var wirearray = player.wire_array as Array
+			var wid = wirearray.find(self)
+			$PaperRay.target_position= Vector2.DOWN*15
+			if  wid-1 >= 0 and wirearray.get(wid-1) != wirearray[wirearray.size()-1]:
+				var ahead_wire = wirearray[wid-1]
+				if not ahead_wire == null:
+					rotation = atan2(ahead_wire.position.y - position.y ,ahead_wire.position.x - position.x)
+					if base_velocity.x >= 0:
+						position.x =  lerp(position.x,ahead_wire.position.x - 15 ,delta*10)
+					else:
+						position.x = lerp(position.x, ahead_wire.position.x + 15,delta*10)
+					position.y = lerp(position.y, ahead_wire.position.y, delta*50) -1
+			if $PaperRay.is_colliding():
+				is_gravity = false
+				velocity = Vector2.ZERO
+				position.y = lerpf(position.y, $PaperRay.get_collision_point().y -5 , delta)
+
 		"40":
 			if base_velocity.x >= 0:
 				velocity.x -= delta*200
@@ -414,7 +443,7 @@ func _on_timer_timeout() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20","210","102" ,"30","13","31","15","51","16","61","17","71","50","80","90", "100", "B0":
+			"20","210","102" ,"30","13","31","310","103","15","51","16","61","17","71","50","80","90", "100", "B0":
 				return
 			"14","41":
 				child_proj("B0")

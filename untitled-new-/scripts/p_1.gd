@@ -38,7 +38,7 @@ var shooting : bool = false
 var shoot_timer : float = 0.0
 
 var primary_dye : int = DYES["METAL"]
-var secondary_dye : int = DYES["COMBAT"]
+var secondary_dye : int = DYES["ELECTRIC"]
 var proj_charge : float = 0.0
 
 var is_hurt : bool = false
@@ -51,6 +51,7 @@ var is_climbing : bool = false
 var is_gravity : bool = true
 var wind_pushing : bool = false
 var cast : RayCast2D
+var wire_array : Array
 
 
 func colorate(current_dye: Array):
@@ -258,10 +259,13 @@ func power_up(paint_type: int):
 
 func shoot():
 	var player_proj = proj_scene.instantiate()
+	if primary_dye == 3 and secondary_dye == 10 or primary_dye == 10 and secondary_dye == 3:
+		wire_array.append(player_proj)
 	player_proj.player = self
 	player_proj.charge = proj_charge
 	get_parent().add_child(player_proj)
 	player_proj.global_position = $Marker2D.global_position
+
 
 func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
@@ -318,7 +322,7 @@ func _on_pv_e_collision_area_exited(area: Area2D) -> void:
 		wind_pushing = false
 	
 func climb_state(state: bool):
-	if state == true and Input.is_action_pressed("up") or Input.is_action_pressed("crouch") and not has_djumped and not is_wheel:
+	if state == true and Input.is_action_pressed("up")  and not has_djumped and not is_wheel or Input.is_action_pressed("crouch") and not has_djumped and not is_wheel:
 		is_climbing = true
 	if state == false:
 		is_climbing = false
@@ -472,6 +476,8 @@ func _physics_process(delta: float) -> void:
 			shoot_timer = 0
 	
 	if Input.is_action_just_pressed("shoot") and not rolling and shoot_timer <= 0 and not is_hurt and not has_djumped:
+		wire_array = Array()
+
 		if is_wheel:
 			is_wheel = not is_wheel
 		else:
@@ -479,9 +485,9 @@ func _physics_process(delta: float) -> void:
 			var current_dye = [primary_dye, secondary_dye]
 			match current_dye:
 				[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
-					SHOOT_DELAY = 0.25
+					SHOOT_DELAY = 0.35
 					$ProjDelay.wait_time = SHOOT_DELAY*0.15
-				[1,4], [4,1], [1,6], [6,1]:
+				[1, 4], [4, 1], [1, 6], [6, 1]:
 					SHOOT_DELAY = 0.125
 					$ProjDelay.wait_time = SHOOT_DELAY*0.5
 				[2, 0], [8,0]:
@@ -493,6 +499,9 @@ func _physics_process(delta: float) -> void:
 				[2,10],[10,2]:
 					SHOOT_DELAY = 0.5
 					$ProjDelay.wait_time = SHOOT_DELAY*0.3
+				[3, 10], [10, 3]:
+					SHOOT_DELAY = 1
+					$ProjDelay.wait_time = SHOOT_DELAY*0.001
 				_:
 					SHOOT_DELAY = 0.25
 					$ProjDelay.wait_time = SHOOT_DELAY*0.15
@@ -520,7 +529,6 @@ func _physics_process(delta: float) -> void:
 					while Input.is_action_pressed("shoot"):
 						$ProjDelay.start()
 						await get_tree().create_timer(0.075).timeout
-						
 				[1,6],[6,1]:
 					proj_charge = 1
 					while Input.is_action_pressed("shoot") and proj_charge <= 15:
@@ -535,6 +543,11 @@ func _physics_process(delta: float) -> void:
 						velocity.y = 300
 					elif Input.is_action_pressed("up"):
 						velocity.y = -300
+				[3,10],[10,3]:
+					for j in range(6):
+						$ProjDelay.start()
+						await get_tree().create_timer(0.001).timeout
+						#print("looped", j ,"times")
 				_:
 					$ProjDelay.start()	
 
@@ -571,6 +584,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func _on_proj_delay_timeout() -> void:
+		#print("made proj")
 		#var current_dye = [primary_dye, secondary_dye]
 		shoot()
 		$ProjDelay.stop()

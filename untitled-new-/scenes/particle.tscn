@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://bhmgl655l8n6n"]
+
+[ext_resource type="Texture2D" uid="uid://c2cfib8r3qflr" path="res://art/level elements V1.png" id="1_jw3tu"]
+[ext_resource type="Script" uid="uid://bmwkfm6t4qd2v" path="res://scenes/particle.gd" id="2_y25om"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y25om"]
+atlas = ExtResource("1_jw3tu")
+region = Rect2(576, 0, 64, 64)
+
+[node name="Particle" type="Sprite2D"]
+scale = Vector2(0.05, 0.05)
+texture = SubResource("AtlasTexture_y25om")
+script = ExtResource("2_y25om")

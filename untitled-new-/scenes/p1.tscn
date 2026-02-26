@@ -318,10 +318,31 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_mlw80")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pf7aa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1li74")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aslb7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mlw80")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pf7aa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1li74")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aslb7")
 }],
-"loop": true,
+"loop": false,
 "name": &"movethrow",
-"speed": 12.0
+"speed": 6.0
 }, {
 "frames": [{
 "duration": 4.0,
@@ -475,16 +496,16 @@ script = ExtResource("1_vokph")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(-1, 0)
-zoom = Vector2(3, 3)
+zoom = Vector2(2, 2)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 material = SubResource("ShaderMaterial_m01ht")
 position = Vector2(0, -0.25000012)
 scale = Vector2(0.25, 0.24499999)
 sprite_frames = SubResource("SpriteFrames_m008u")
-animation = &"swipe"
+animation = &"movethrow"
 autoplay = "default"
-frame = 4
+frame = 10
 frame_progress = 1.0
 
 [node name="Marker2D" type="Marker2D" parent="."]
