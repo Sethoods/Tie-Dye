@@ -580,9 +580,19 @@ func _physics_process(delta: float) -> void:
 	if not rolling:
 		roll_accel = move_toward(roll_accel, 0.0, 200 * delta)
 	
+	$HalfplatRay.target_position =Vector2(50*sin(Time.get_ticks_msec()),-25)
+	
+	if $HalfplatRay.is_colliding():
+		var above_body = $HalfplatRay.get_collider() as StaticBody2D
+		if above_body.is_in_group("Halfplat") and velocity.y < 0:
+			above_body.call_deferred("set_collision_layer_value", 5, false)
+			await get_tree().create_timer(0.75).timeout
+			above_body.call_deferred("set_collision_layer_value", 5, true)
+			
 	animate(delta)
 	move_and_slide()
 
+			
 func _on_proj_delay_timeout() -> void:
 		#print("made proj")
 		#var current_dye = [primary_dye, secondary_dye]

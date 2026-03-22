@@ -4,6 +4,7 @@ const vine_scene = preload("res://scenes/vine.tscn")
 const fan_scene = preload("res://scenes/fan.tscn")
 const spring_scene = preload("res://scenes/spring.tscn")
 const paint_bucket_scene = preload("res://scenes/paintbucket.tscn")
+const flatplat_scene = preload("res://scenes/paqueform.tscn")
 # Called when the node enters the scene tree for the first time.
 func instantiate_scene(scene: Resource, this_position: Vector2, value, entity : String):
 	var element = scene.instantiate()
@@ -17,7 +18,7 @@ func instantiate_scene(scene: Resource, this_position: Vector2, value, entity : 
 	add_child(element)
 	#print(vine.global_position)
 	
-func get_array_tiles(coord_one: Vector2i, coord_two: Vector2i):
+func get_array_tiles(coord_one: Vector2i, coord_two: Vector2i) -> Array[Vector2i]:
 	await get_tree().process_frame
 	var tile_array = get_used_cells_by_id(-1,coord_one)
 	if coord_two != Vector2i.ZERO:
@@ -67,8 +68,11 @@ func _ready() -> void:
 				cell_normal = spring_pos-Vector2i(cell)
 		instantiate_scene(spring_scene, spring_pos, cell_normal, "Spring")
 		
-	for bucket_pos in await get_array_tiles(Vector2i(6,4),Vector2i(7,4)):
+	for bucket_pos : Vector2i in await get_array_tiles(Vector2i(6,4),Vector2i(7,4)):
 		instantiate_scene(paint_bucket_scene, bucket_pos, 0, "Bucket")
+		
+	for plat_pos : Vector2i in await get_array_tiles(Vector2i(8,4), Vector2.ZERO):
+		instantiate_scene(flatplat_scene, plat_pos, 0, "Halfplat")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

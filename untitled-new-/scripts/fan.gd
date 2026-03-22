@@ -13,7 +13,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	timer += delta
-	if fmod(timer, 10*delta)  <= 0.025 and player.position.x - position.x <= 125 and player.position.x - position.x >= -125:
+	if fmod(timer, 20*delta)  <= 0.025 and player.position.x - position.x <= 125 and player.position.x - position.x >= -125:
 		var particle = fan_particle.instantiate()
 		get_parent().add_child(particle)
 		particle.fan = self
