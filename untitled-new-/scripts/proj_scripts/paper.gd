@@ -170,7 +170,7 @@ func _ready() -> void:
 			velocity.x += randf_range(-100,100)
 			velocity.y += randf_range(-100,100)
 			$PaperRay.enabled = true
-			$PaperRay.target_position = Vector2(0, 10)
+			$PaperRay.target_position = Vector2(0, 5)
 			$Timer.start(8)
 		"40":
 			is_gravity = false
@@ -316,27 +316,27 @@ func _physics_process(delta: float) -> void:
 			var osc = 15*cos(35*(spin_timer))
 			position.y += osc
 		"310","103":
-			var wirearray = player.wire_array as Array
+			var wirearray = player.wire_array
 			var wid = wirearray.find(self)
 			$PaperRay.target_position= Vector2.DOWN*15
 			if  wid-1 >= 0 and wirearray.get(wid-1) != wirearray[wirearray.size()-1]:
-				var ahead_wire = wirearray[wid-1] as Area2D
+				var ahead_wire = wirearray[wid-1]
 				if not ahead_wire == null:
 					rotation = atan2(ahead_wire.position.y - position.y ,ahead_wire.position.x - position.x)
 					if base_velocity.x >= 0:
-						position.x =  lerp(position.x,ahead_wire.position.x+ahead_wire.get_child(0).region_rect.size.x ,delta)
+						position.x =  lerp(position.x,ahead_wire.position.x+ahead_wire.get_child(0).region_rect.size.x/3 ,50*delta)
 					else:
-						position.x = lerp(position.x, ahead_wire.position.x + 15,delta)
+						position.x = lerp(position.x, ahead_wire.position.x-ahead_wire.get_child(0).region_rect.size.x/3,50*delta)
 					if not $PaperRay.is_colliding():
-						position.y = lerp(position.y, ahead_wire.position.y, delta*50)
-					#$ProjSprite.scale.x = sqrt((ahead_wire.position.x - position.x)**2+(ahead_wire.position.y - position.y)**2)/8
-					#$CollisionShape2D.scale.y = sqrt((ahead_wire.position.x - position.x)**2+(ahead_wire.position.y - position.y)**2)/4
-
-			if $PaperRay.is_colliding():
-				is_gravity = false
-				velocity = Vector2.ZERO
-				position.y = lerpf(position.y, $PaperRay.get_collision_point().y , delta/30)
-
+						position.y = lerp(position.y, ahead_wire.position.y, delta*4)
+						
+					$ProjSprite.scale.x = sqrt((ahead_wire.position.x - position.x)**2+(ahead_wire.position.y - position.y)**2)/80
+					position.y -= sqrt((ahead_wire.position.x - position.x)**2+(ahead_wire.position.y - position.y)**2)/80
+ 
+				if $PaperRay.is_colliding():
+					is_gravity = false
+					velocity = Vector2.ZERO
+					position.y = lerpf(position.y, $PaperRay.get_collision_point().y , delta/30)
 		"40":
 			if base_velocity.x >= 0:
 				velocity.x -= delta*200
