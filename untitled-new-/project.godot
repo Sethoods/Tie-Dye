@@ -23,6 +23,10 @@ config/features=PackedStringArray("4.5", "GL Compatibility")
 window/size/viewport_width=576
 window/size/viewport_height=468
 
+[global_group]
+
+Hazards="Any static hazards"
+
 [input]
 
 ui_accept={

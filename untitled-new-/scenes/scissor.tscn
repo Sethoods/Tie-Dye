@@ -25,9 +25,11 @@ texture = SubResource("AtlasTexture_8yypt")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_j3cs6")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="Area2D" type="Area2D" parent="." groups=["Hazards"]]
 position = Vector2(8.000001, -78.00001)
 scale = Vector2(1.0000001, 1.0000001)
+collision_layer = 4
+collision_mask = 0
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(-4.7683716e-07, 7.6293945e-06)

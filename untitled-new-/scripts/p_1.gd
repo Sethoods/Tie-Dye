@@ -281,7 +281,7 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 				print("YES!")
 				area.get_parent().player_collided("top")
 			else:
-				velocity += Vector2(-direction*100*min(2, max(1, accel)), -50)
+				velocity += Vector2(-direction*100*min(2, max(1, accel)), -100)
 				if not is_crouching:
 					accel = 0
 				print("ouch")
@@ -316,6 +316,17 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 			secondary_dye=DYES["NULL"]
 			colorate([primary_dye, secondary_dye])
 			print("washed")
+	elif area.is_in_group("Hazards"):
+		velocity += Vector2(-direction*100*min(2, max(1, accel)), -100)
+		if not is_crouching:
+				accel = 0
+				print("ouch")
+				is_hurt = true
+				hurt_timer = 0
+				$AnimatedSprite2D.play("ouch")
+				if direction < 0:
+					$AnimatedSprite2D.flip_h = true
+		
 	
 func _on_pv_e_collision_area_exited(area: Area2D) -> void:
 	if area.is_in_group("Fans"):
