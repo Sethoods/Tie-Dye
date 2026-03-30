@@ -3,6 +3,7 @@ extends Area2D
 var velocity := Vector2.ZERO
 
 var base_velocity := Vector2.ZERO
+var base_dir
 
 var saved_velocity := Vector2.ZERO
 
@@ -21,7 +22,8 @@ var is_healing := false
 var is_gravity := true
 var is_collide := false
 var explosive := false
-@export var cluster = preload("res://scenes/paper.tscn")
+var cluster = preload("res://scenes/paper.tscn")
+var whirl = preload("res://art/whirl.png")
 
 func explode():
 		velocity = Vector2.ZERO
@@ -65,6 +67,7 @@ func _ready() -> void:
 		id = str(player.primary_dye) + str(player.secondary_dye)
 		#print(id)
 		base_velocity = Vector2(125*player.proj_dir[0], -200*(player.proj_dir[1]))
+		base_dir = base_velocity.normalized()
 		#print(base_velocity)
 		velocity.x += base_velocity.x + player.velocity.x
 		velocity.y += base_velocity.y
@@ -125,7 +128,7 @@ func _ready() -> void:
 			player.proj_charge = 0.0
 		"17", "71":
 			can_spin = false
-			$ProjSprite.rotation += 45
+			$ProjSprite.rotation_degrees += 45
 			velocity.y = 40
 			velocity.x /= 10
 			is_gravity = false
@@ -181,11 +184,25 @@ func _ready() -> void:
 			$Timer.stop()
 			$Timer.start(6)
 			is_healing = true
+		"410", "104":
+			position.y = player.position.y + 6
+			rotation_degrees -= 45
+			velocity = Vector2.ZERO
+			is_gravity = false
+			can_spin = false
+			$Timer.stop()
 		"50":
 			is_gravity = false
 			velocity /= 2
 			$Timer.stop()
 			$Timer.start(5)
+		"510", "105":
+			$AOE.set_deferred("monitoring", true)
+			$AOE/CollisionShape2D.shape.radius = 70
+			print($AOE/Sprite2D.get_texture())
+			
+			$AOE/Sprite2D.texture = whirl
+			$AOE/Sprite2D.visible = true
 		"60":
 			velocity.x /= 1.25
 			is_freezing = true
@@ -346,6 +363,29 @@ func _physics_process(delta: float) -> void:
 				velocity.y -= delta*60
 			else:
 				velocity.y += delta*80
+		"410", "104":
+			if Input.is_action_just_pressed("shoot"):
+				queue_free()
+			if Input.is_action_pressed("shoot"):
+				if player.proj_charge <= 7.5:
+					rotation_degrees = 45
+					velocity.x = clamp(base_dir.x*player.proj_charge*20, -100, 100)
+					position.y -= player.proj_charge *delta*5
+					global_scale.x += player.proj_charge*delta
+					global_scale.y += player.proj_charge*delta
+
+			else:
+				velocity.x = 0
+				if base_dir.x >= 0:
+					while rotation_degrees < 135*base_dir.x:
+						rotation_degrees += delta*500
+						await get_tree().create_timer(delta).timeout
+				else:
+					while rotation_degrees > 45*base_dir.x:
+						rotation_degrees -= delta*500
+						await get_tree().create_timer(delta).timeout
+				await get_tree().create_timer(2).timeout
+				queue_free()
 		"50":
 			var motion_origin = position
 			spin_timer += delta
@@ -354,6 +394,8 @@ func _physics_process(delta: float) -> void:
 			position.x = motion_origin.x + spiral_distance * cos(angle)
 			position.y = motion_origin.y + spiral_distance * sin(angle)
 			motion_origin.x += velocity.x*delta**2
+		"510", "105":
+			$AOE.rotation += delta*200
 		"80":
 			var normal := Vector2.ZERO
 			$PaperRay.target_position = Vector2(velocity.x/50, velocity.y/50)
@@ -447,7 +489,7 @@ func _on_timer_timeout() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is TileMapLayer:
 		match id:
-			"20","210","102" ,"30","13","31","310","103","15","51","16","61","17","71","50","80","90", "100", "B0":
+			"20","210","102" ,"30","13","31","310","103","410","104","15","51","16","61","17","71","50","80","90", "100", "B0":
 				return
 			"14","41":
 				child_proj("B0")
@@ -473,7 +515,7 @@ func _on_area_entered(area: Area2D) -> void:
 		var boksy = area.get_parent() as CharacterBody2D
 		if explosive:
 			explode()
-		if not id == "30" and not id == "80" and not id == "13" and not id == "31"  and not id == "15"  and not id == "51"  and not id == "16"  and not id == "61" and not id == "19" and not id == "91" and not id== "110" and not id == "101" and not id == "210" and not id == "102":
+		if not id == "30" and not id == "80" and not id == "13" and not id == "31"  and not id == "15"  and not id == "51"  and not id == "16"  and not id == "61" and not id == "19" and not id == "91" and not id== "110" and not id == "101" and not id == "210" and not id == "102" and not id == "410" and not id == "104":
 			#print(id+ " destroyed")
 			queue_free()
 			if id == "20" or id == "90":
@@ -501,7 +543,15 @@ func _on_area_entered(area: Area2D) -> void:
 func _on_aoe_area_entered(area: Area2D) -> void:
 	if area.is_in_group("Enemy Hitboxes"):
 		var boksy = area.get_parent() as CharacterBody2D
-		boksy.proj_collided("B00M", velocity)
+		match id:
+			"110", "101":
+				boksy.proj_collided("B00M", velocity)
+			"510", "105":
+				boksy.stun_timer = 5.0
+				boksy.stunned = true
+				boksy.velocity.x += velocity.x
+				boksy.velocity.y -= velocity.y*2
+
 
 
 func _on_body_exited(body: Node2D) -> void:

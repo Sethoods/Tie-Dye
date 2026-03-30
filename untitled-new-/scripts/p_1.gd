@@ -38,7 +38,7 @@ var shooting : bool = false
 var shoot_timer : float = 0.0
 
 var primary_dye : int = DYES["METAL"]
-var secondary_dye : int = DYES["ELECTRIC"]
+var secondary_dye : int = DYES["AIR"]
 var proj_charge : float = 0.0
 
 var is_hurt : bool = false
@@ -333,8 +333,9 @@ func _on_pv_e_collision_area_exited(area: Area2D) -> void:
 		wind_pushing = false
 	
 func climb_state(state: bool):
-	if state == true and Input.is_action_pressed("up")  and not has_djumped and not is_wheel or Input.is_action_pressed("crouch") and not has_djumped and not is_wheel:
+	while  state == true and Input.is_action_pressed("up")  and not has_djumped and not is_wheel or Input.is_action_pressed("crouch") and not has_djumped and not is_wheel:
 		is_climbing = true
+		break
 	if state == false:
 		is_climbing = false
 
@@ -510,13 +511,14 @@ func _physics_process(delta: float) -> void:
 				[2,10],[10,2]:
 					SHOOT_DELAY = 0.5
 					$ProjDelay.wait_time = SHOOT_DELAY*0.3
-				[3, 10], [10, 3]:
+				[3, 10], [10, 3], [4,10], [10,4]:
 					SHOOT_DELAY = 1
 					$ProjDelay.wait_time = SHOOT_DELAY*0.001
 				_:
 					SHOOT_DELAY = 0.25
 					$ProjDelay.wait_time = SHOOT_DELAY*0.15
 			shooting = true
+			#Animation
 			match current_dye:
 				[2,0]:
 					$AnimatedSprite2D.play("spinthrow")
@@ -530,7 +532,7 @@ func _physics_process(delta: float) -> void:
 						$AnimatedSprite2D.play("throw")
 					else:
 						$AnimatedSprite2D.play("movethrow")
-			
+			#Charges and delays
 			match current_dye:
 				[1,2],[2,1]:
 					for i in range(5):
@@ -542,9 +544,8 @@ func _physics_process(delta: float) -> void:
 						await get_tree().create_timer(0.075).timeout
 				[1,6],[6,1]:
 					proj_charge = 1
-					while Input.is_action_pressed("shoot") and proj_charge <= 15:
-						proj_charge += 10*delta
-						print(proj_charge)
+					while Input.is_action_pressed("shoot") and proj_charge <= 7.5:
+						proj_charge += 20*delta
 						await get_tree().create_timer(0.075).timeout
 					$ProjDelay.start()
 				[1,8],[8,1]:
@@ -559,6 +560,12 @@ func _physics_process(delta: float) -> void:
 						$ProjDelay.start()
 						await get_tree().create_timer(0.001).timeout
 						#print("looped", j ,"times")
+				[4,10],[10,4]:
+					proj_charge = 1
+					$ProjDelay.start()
+					while Input.is_action_pressed("shoot") and proj_charge <= 7.5:
+						proj_charge += 10*delta
+						await get_tree().create_timer(0.075).timeout
 				_:
 					$ProjDelay.start()	
 
@@ -597,7 +604,7 @@ func _physics_process(delta: float) -> void:
 		var above_body = $HalfplatRay.get_collider() as StaticBody2D
 		if above_body.is_in_group("Halfplat") and velocity.y < 0:
 			above_body.call_deferred("set_collision_layer_value", 5, false)
-			await get_tree().create_timer(0.75).timeout
+			await get_tree().create_timer(0.65).timeout
 			above_body.call_deferred("set_collision_layer_value", 5, true)
 			
 	animate(delta)

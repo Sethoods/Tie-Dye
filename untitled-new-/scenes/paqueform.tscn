@@ -19,5 +19,5 @@ scale = Vector2(1.05, 1)
 texture = SubResource("AtlasTexture_8yes7")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-32, 6)
+position = Vector2(-32, 30)
 shape = SubResource("SegmentShape2D_ldalh")
