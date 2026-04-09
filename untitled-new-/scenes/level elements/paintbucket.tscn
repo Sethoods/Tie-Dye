@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://b6i10kk7na05g"]
+
+[ext_resource type="Script" uid="uid://d1kact1qupu6v" path="res://scripts/paintbucket.gd" id="1_md726"]
+[ext_resource type="Texture2D" uid="uid://c2cfib8r3qflr" path="res://art/level elements V1.png" id="2_s31vw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r7i4k"]
+atlas = ExtResource("2_s31vw")
+region = Rect2(64, 192, 64, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jvus3"]
+size = Vector2(11.5, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_md726"]
+size = Vector2(10, 19)
+
+[node name="StaticBody2D" type="StaticBody2D"]
+script = ExtResource("1_md726")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = SubResource("AtlasTexture_r7i4k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.25, 1)
+shape = SubResource("RectangleShape2D_jvus3")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Area2D" type="Area2D" parent="." groups=["Paint Buckets"]]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_md726")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

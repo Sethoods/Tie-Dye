@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://dlu7674nbbo8d"]
+
+[ext_resource type="Texture2D" uid="uid://b3ytcti0b1juw" path="res://art/enemies.png" id="1_0jk0v"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_whntk"]
+atlas = ExtResource("1_0jk0v")
+region = Rect2(60, 0, 60, 120)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3r6hk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_whntk")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_elxk7"]
+size = Vector2(53, 50)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_3r6hk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-4.5, 35)
+shape = SubResource("RectangleShape2D_elxk7")

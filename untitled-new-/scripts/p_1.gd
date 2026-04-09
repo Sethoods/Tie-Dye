@@ -33,7 +33,7 @@ var rolling : bool = false
 var roll_accel : float = 0.0
 
 var proj_dir : Vector2
-@export var proj_scene = preload("res://scenes/paper.tscn")
+@export var proj_scene = preload("res://scenes/entities/paper.tscn")
 var shooting : bool = false
 var shoot_timer : float = 0.0
 
@@ -48,6 +48,7 @@ var health : int = 0
 var is_wheel : bool = false
 var is_crouching : bool = false
 var is_climbing : bool = false
+var can_climb : bool = false
 var is_gravity : bool = true
 var wind_pushing : bool = false
 var cast : RayCast2D
@@ -172,7 +173,7 @@ func animate(_delta: float) -> void:
 				$AnimatedSprite2D.play("float")
 			else:
 				if velocity.y < 0:
-					$AnimatedSprite2D.play("jump")
+					$AnimatedSprite2D.play("jump2")
 				else:
 					$AnimatedSprite2D.play("fall")
 	$AnimatedSprite2D.speed_scale = 1 + (accel/2)
@@ -331,6 +332,8 @@ func _on_pv_e_collision_area_entered(area: Area2D) -> void:
 func _on_pv_e_collision_area_exited(area: Area2D) -> void:
 	if area.is_in_group("Fans"):
 		wind_pushing = false
+	if area.is_in_group("Climb Hitboxes"):
+		can_climb = false
 	
 func climb_state(state: bool):
 	while  state == true and Input.is_action_pressed("up")  and not has_djumped and not is_wheel or Input.is_action_pressed("crouch") and not has_djumped and not is_wheel:
@@ -352,6 +355,10 @@ func _input(_event: InputEvent) -> void:
 		proj_dir = Vector2(Input.get_axis("move_left", "move_right"), Input.get_axis("crouch", "up"))
 
 func _physics_process(delta: float) -> void:
+	if abs(velocity.x) >= 1:
+		var stream = get_parent().get_node("AudioStreamPlayer") as AudioStreamPlayer
+		stream.pitch_scale += 0.00001
+		
 	floor_snap_length = 30 if rolling else 10
 	floor_max_angle = PI/2.1
 	
@@ -363,7 +370,8 @@ func _physics_process(delta: float) -> void:
 		if not is_wheel:
 			$AnimatedSprite2D.play("jump")
 		wind_state(wind_pushing, delta)
-	
+	if can_climb:
+		climb_state(true)
 	if is_climbing:
 		is_gravity = false
 		if velocity != Vector2.ZERO:
@@ -387,6 +395,7 @@ func _physics_process(delta: float) -> void:
 		$Crouch2.set_deferred("disabled", true)
 	
 	if is_climbing:
+		is_wheel = false
 		if Input.is_action_pressed("up"):
 			if wind_pushing:
 				velocity += -cast.target_position
@@ -400,6 +409,7 @@ func _physics_process(delta: float) -> void:
 	
 	if is_hurt:
 		hurt_timer += delta
+		is_wheel = false
 		if hurt_timer > 1:
 			hurt_timer = 0
 			is_hurt = false
@@ -604,7 +614,7 @@ func _physics_process(delta: float) -> void:
 		var above_body = $HalfplatRay.get_collider() as StaticBody2D
 		if above_body.is_in_group("Halfplat") and velocity.y < 0:
 			above_body.call_deferred("set_collision_layer_value", 5, false)
-			await get_tree().create_timer(0.65).timeout
+			await get_tree().create_timer(0.25).timeout
 			above_body.call_deferred("set_collision_layer_value", 5, true)
 			
 	animate(delta)

@@ -1,19 +1,20 @@
-[gd_scene load_steps=8 format=3 uid="uid://b5lmxcbpp3eaa"]
+[gd_scene load_steps=9 format=3 uid="uid://b5lmxcbpp3eaa"]
 
 [ext_resource type="Script" uid="uid://bdgfrks46g5gq" path="res://scripts/mylevel.gd" id="1_ihyw0"]
-[ext_resource type="PackedScene" uid="uid://dkiwy771wd18a" path="res://scenes/terrain1.tscn" id="1_ybe71"]
+[ext_resource type="PackedScene" uid="uid://dkiwy771wd18a" path="res://scenes/tilemaps/terrain1.tscn" id="1_ybe71"]
 [ext_resource type="Texture2D" uid="uid://bspxivwgoryxv" path="res://art/placeholder bg.jpg" id="2_dtrk2"]
-[ext_resource type="PackedScene" uid="uid://c788sfrv8kllu" path="res://scenes/p1.tscn" id="2_ihyw0"]
-[ext_resource type="PackedScene" uid="uid://d32tobrlt6vxl" path="res://scenes/boksy.tscn" id="5_51dsx"]
-[ext_resource type="PackedScene" uid="uid://cvdwor2xn3ob0" path="res://scenes/scissor.tscn" id="7_dwnpp"]
-[ext_resource type="PackedScene" uid="uid://cl1ugtq6tyfj0" path="res://scenes/frozemed.tscn" id="7_lbssl"]
+[ext_resource type="PackedScene" uid="uid://c788sfrv8kllu" path="res://scenes/entities/p1.tscn" id="2_ihyw0"]
+[ext_resource type="PackedScene" uid="uid://d32tobrlt6vxl" path="res://scenes/entities/boksy.tscn" id="5_51dsx"]
+[ext_resource type="PackedScene" uid="uid://cvdwor2xn3ob0" path="res://scenes/level elements/scissor.tscn" id="7_dwnpp"]
+[ext_resource type="PackedScene" uid="uid://cl1ugtq6tyfj0" path="res://scenes/entities/frozemed.tscn" id="7_lbssl"]
+[ext_resource type="AudioStream" uid="uid://cu1w4tu106h7e" path="res://sfx/Initiate! Execute! Go! (Tie's Theme V1).wav" id="8_dwnpp"]
 
 [node name="mylevel" type="Node2D"]
 script = ExtResource("1_ihyw0")
 
 [node name="background" type="Sprite2D" parent="."]
 position = Vector2(74.999954, -278.00003)
-scale = Vector2(10.409266, 10.4433)
+scale = Vector2(10, 10.033)
 texture = ExtResource("2_dtrk2")
 
 [node name="Level_test" parent="." instance=ExtResource("1_ybe71")]
@@ -72,3 +73,8 @@ start_angle = 180.0
 [node name="StaticBody2D4" parent="." instance=ExtResource("7_dwnpp")]
 position = Vector2(-529, 38)
 start_angle = 90.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_dwnpp")
+volume_db = -6.0
+autoplay = true

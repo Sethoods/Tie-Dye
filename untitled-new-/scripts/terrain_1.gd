@@ -1,10 +1,10 @@
 extends TileMapLayer
 
-const vine_scene = preload("res://scenes/vine.tscn")
-const fan_scene = preload("res://scenes/fan.tscn")
-const spring_scene = preload("res://scenes/spring.tscn")
-const paint_bucket_scene = preload("res://scenes/paintbucket.tscn")
-const flatplat_scene = preload("res://scenes/paqueform.tscn")
+const vine_scene = preload("res://scenes/level elements/vine.tscn")
+const fan_scene = preload("res://scenes/level elements/fan.tscn")
+const spring_scene = preload("res://scenes/level elements/spring.tscn")
+const paint_bucket_scene = preload("res://scenes/level elements/paintbucket.tscn")
+const flatplat_scene = preload("res://scenes/level elements/paqueform.tscn")
 # Called when the node enters the scene tree for the first time.
 func instantiate_scene(scene: Resource, this_position: Vector2, value, entity : String):
 	var element = scene.instantiate()

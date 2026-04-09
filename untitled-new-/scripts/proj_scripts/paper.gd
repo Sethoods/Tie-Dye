@@ -22,13 +22,16 @@ var is_healing := false
 var is_gravity := true
 var is_collide := false
 var explosive := false
-var cluster = preload("res://scenes/paper.tscn")
+var cluster = preload("res://scenes/entities/paper.tscn")
 var whirl = preload("res://art/whirl.png")
+var boom = preload("res://art/explosion.png")
+
 
 func explode():
 		velocity = Vector2.ZERO
 		hit_state = true
 		$AOE.visible = true
+		$AOE/Sprite2D.texture = boom
 		$AOE.set_deferred("monitoring", true)
 		await get_tree().create_timer(0.25).timeout
 		queue_free()
@@ -146,6 +149,8 @@ func _ready() -> void:
 			$PaperRay.set_collision_mask_value(3, true)
 		"110", "101":
 			explosive = true
+			$AOE/CollisionShape2D.shape.radius = 35	
+			$AOE/Sprite2D.visible = false
 			$Timer.stop()
 			$Timer.start(1)
 		"20":
@@ -198,9 +203,7 @@ func _ready() -> void:
 			$Timer.start(5)
 		"510", "105":
 			$AOE.set_deferred("monitoring", true)
-			$AOE/CollisionShape2D.shape.radius = 70
-			print($AOE/Sprite2D.get_texture())
-			
+			$AOE/CollisionShape2D.shape.radius = 70			
 			$AOE/Sprite2D.texture = whirl
 			$AOE/Sprite2D.visible = true
 		"60":

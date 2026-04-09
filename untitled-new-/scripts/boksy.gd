@@ -11,7 +11,7 @@ var burndedness: int = 0
 var shocks : int = 0
 var shock_timer : float = 0.5
 @onready var tilemap: TileMapLayer = get_node("/root/mylevel/Level_test")
-@export var frozen = preload("res://scenes/frozemed.tscn")
+@export var frozen = preload("res://scenes/entities/frozemed.tscn")
 var effect_temp = preload("res://art/lightningfekt ph.png")
 var time_extant = 0
 var cast
