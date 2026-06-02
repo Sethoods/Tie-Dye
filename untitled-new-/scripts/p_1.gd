@@ -18,7 +18,7 @@ const SPEED = 75.0
 const JUMP_VELOCITY = -330.0
 
 const MIN_ACCEL = 1
-const MAX_ACCEL = 5
+const MAX_ACCEL = 7
 const RATE_GROWTH_ACCEL = 0.5
 
 var SHOOT_DELAY : float = .25
@@ -38,7 +38,7 @@ var shooting : bool = false
 var shoot_timer : float = 0.0
 
 var primary_dye : int = DYES["METAL"]
-var secondary_dye : int = DYES["AIR"]
+var secondary_dye : int = DYES["FIRE"]
 var proj_charge : float = 0.0
 
 var is_hurt : bool = false
@@ -53,7 +53,6 @@ var is_gravity : bool = true
 var wind_pushing : bool = false
 var cast : RayCast2D
 var wire_array : Array
-
 
 func colorate(current_dye: Array):
 	if current_dye[0] == DYES["NULL"] and current_dye[1] == DYES["NULL"]:
@@ -131,7 +130,6 @@ func colorate(current_dye: Array):
 					$AnimatedSprite2D.material.set("shader_parameter/secondary_color", Color(0.6, 0.6, 0.6, 1.0))
 		#else:
 			#$AnimatedSprite2D.material.set("shader_parameter/fill_color", Color(0.404, 0.188, 0.0, 1.0))
-	
 
 func animate(_delta: float) -> void:
 	if direction < 0 or velocity.x < 0:
@@ -355,11 +353,8 @@ func _input(_event: InputEvent) -> void:
 		proj_dir = Vector2(Input.get_axis("move_left", "move_right"), Input.get_axis("crouch", "up"))
 
 func _physics_process(delta: float) -> void:
-	if abs(velocity.x) >= 1:
-		var stream = get_parent().get_node("AudioStreamPlayer") as AudioStreamPlayer
-		stream.pitch_scale += 0.00001
 		
-	floor_snap_length = 30 if rolling else 10
+	floor_snap_length = 20 if rolling else 10
 	floor_max_angle = PI/2.1
 	
 	if $"PvE collision".has_overlapping_areas() == false:
@@ -442,7 +437,14 @@ func _physics_process(delta: float) -> void:
 	if direction and prev_dir and not is_hurt:
 		if not rolling and not is_climbing:
 			var max_movement_speed = SPEED * accel
-			velocity.x = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED * 5) * delta) 
+			var current_vx = velocity.x
+			var new_vx = move_toward(velocity.x, max_movement_speed * direction+roll_accel, (SPEED*5) * delta) 
+			if abs(current_vx) <= abs(new_vx):
+				var slowed_vx = new_vx/1.03
+				velocity.x = slowed_vx
+			else:
+				velocity.x = new_vx
+				
 			if is_wheel:
 				if direction == 1:
 					if velocity.x < 0:
@@ -506,7 +508,7 @@ func _physics_process(delta: float) -> void:
 			is_crouching = false
 			var current_dye = [primary_dye, secondary_dye]
 			match current_dye:
-				[0, 0], [1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
+				[1, 0], [3,0], [4,0], [5,0], [6,0], [7,0]:
 					SHOOT_DELAY = 0.35
 					$ProjDelay.wait_time = SHOOT_DELAY*0.15
 				[1, 4], [4, 1], [1, 6], [6, 1]:
@@ -525,7 +527,7 @@ func _physics_process(delta: float) -> void:
 					SHOOT_DELAY = 1
 					$ProjDelay.wait_time = SHOOT_DELAY*0.001
 				_:
-					SHOOT_DELAY = 0.25
+					SHOOT_DELAY = 0.5
 					$ProjDelay.wait_time = SHOOT_DELAY*0.15
 			shooting = true
 			#Animation

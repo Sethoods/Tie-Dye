@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://blg4v3rdovhdk"]
+
+[ext_resource type="PackedScene" uid="uid://d3n1bulhk31qv" path="res://scenes/tilemaps/testbrusho.tscn" id="1_dk30p"]
+[ext_resource type="PackedScene" uid="uid://41rmjao4fh5l" path="res://scenes/entities/brusho.tscn" id="2_7xjfy"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Tilemap with Borders" parent="." instance=ExtResource("1_dk30p")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.75, 0.75)
+
+[node name="brusho" parent="." instance=ExtResource("2_7xjfy")]
+position = Vector2(-136, -97)
+
+[node name="brusho2" parent="." instance=ExtResource("2_7xjfy")]
+position = Vector2(-204, -195)
+
+[node name="brusho3" parent="." instance=ExtResource("2_7xjfy")]
+position = Vector2(75, -28)
+
+[node name="brusho4" parent="." instance=ExtResource("2_7xjfy")]
+position = Vector2(-207, 154)

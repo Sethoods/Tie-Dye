@@ -31,7 +31,7 @@ func explode():
 		velocity = Vector2.ZERO
 		hit_state = true
 		$AOE.visible = true
-		$AOE/Sprite2D.texture = boom
+		$AOE/Sprite2D.set_texture(boom)
 		$AOE.set_deferred("monitoring", true)
 		await get_tree().create_timer(0.25).timeout
 		queue_free()
@@ -149,8 +149,7 @@ func _ready() -> void:
 			$PaperRay.set_collision_mask_value(3, true)
 		"110", "101":
 			explosive = true
-			$AOE/CollisionShape2D.shape.radius = 35	
-			$AOE/Sprite2D.visible = false
+			$AOE/CollisionShape2D.shape.radius = 70
 			$Timer.stop()
 			$Timer.start(1)
 		"20":

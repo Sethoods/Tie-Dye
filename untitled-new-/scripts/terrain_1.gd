@@ -28,6 +28,7 @@ func get_array_tiles(coord_one: Vector2i, coord_two: Vector2i) -> Array[Vector2i
 
 func _ready() -> void:
 	#print(vine_array))
+	Engine.time_scale = 1
 	
 	for vine_pos : Vector2i in await get_array_tiles(Vector2i(0,4), Vector2i(1,4)):
 		var vine_loops := 0

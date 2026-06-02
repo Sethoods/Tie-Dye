@@ -1,15 +1,19 @@
-[gd_scene load_steps=9 format=3 uid="uid://d32tobrlt6vxl"]
+[gd_scene load_steps=10 format=3 uid="uid://d32tobrlt6vxl"]
 
-[ext_resource type="Texture2D" uid="uid://dyjwr73f6073h" path="res://art/test enem.svg" id="1_ja1ip"]
-[ext_resource type="Script" uid="uid://bgim08b6pcpp3" path="res://scripts/boksy.gd" id="1_u7pnd"]
+[ext_resource type="Script" uid="uid://bgim08b6pcpp3" path="res://scripts/enem_scripts/boksy.gd" id="1_u7pnd"]
+[ext_resource type="Texture2D" uid="uid://b3ytcti0b1juw" path="res://art/enemies.png" id="2_4drpo"]
 [ext_resource type="Texture2D" uid="uid://4ffk0l2qqu72" path="res://art/fire ph.png" id="3_0clhr"]
 [ext_resource type="Script" uid="uid://5i4evj51e732" path="res://scripts/ray_cast_forward.gd" id="3_llj3d"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pop3d"]
+atlas = ExtResource("2_4drpo")
+region = Rect2(0, 0, 60, 60)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_llj3d"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_ja1ip")
+"texture": SubResource("AtlasTexture_pop3d")
 }],
 "loop": true,
 "name": &"default",
@@ -18,7 +22,7 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u7pnd"]
 radius = 8.0
-height = 16.0
+height = 18.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_llj3d"]
 size = Vector2(20, 18)
@@ -29,11 +33,16 @@ radius = 128.24976
 [node name="boksy" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 4
 collision_mask = 3
+floor_snap_length = 6.0
 script = ExtResource("1_u7pnd")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
+position = Vector2(0, 0.5)
+scale = Vector2(0.33333334, 0.35000002)
 sprite_frames = SubResource("SpriteFrames_llj3d")
+frame_progress = 0.96954095
+flip_h = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
@@ -44,8 +53,13 @@ position = Vector2(0, 2)
 shape = SubResource("CapsuleShape2D_u7pnd")
 
 [node name="RayCastForward" type="RayCast2D" parent="."]
+enabled = false
 target_position = Vector2(-20, 0)
 script = ExtResource("3_llj3d")
+posx_t = 6.0
+posx_o = 3.0
+posy_t = -20.0
+posy_o = 8.0
 
 [node name="EvP collision" type="Area2D" parent="." groups=["Enemy Hitboxes"]]
 collision_layer = 4

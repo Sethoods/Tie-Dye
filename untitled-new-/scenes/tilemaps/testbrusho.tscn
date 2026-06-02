@@ -1,0 +1,157 @@
+[gd_scene load_steps=8 format=4 uid="uid://d3n1bulhk31qv"]
+
+[ext_resource type="Texture2D" uid="uid://bo13sib0666em" path="res://art/test_tiles1.svg" id="1_csmqj"]
+[ext_resource type="Script" uid="uid://btrwrybm011ls" path="res://scripts/terrain_1.gd" id="2_o37mh"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d1xuu"]
+resource_name = "test tiles"
+texture = ExtResource("1_csmqj")
+separation = Vector2i(1, 1)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -8, -8, 8, 8, 8)
+0:0/0/custom_data_0 = true
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -8, 8, 8, -8, 8, -8, -8)
+1:0/0/custom_data_0 = true
+1:0/0/custom_data_1 = true
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 0, -8, 8, 8, 8, 8, -8)
+2:0/0/custom_data_0 = true
+3:0/0 = 0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -8, 8, 8, -8, 8, 0, -8)
+3:0/0/custom_data_0 = true
+4:0/0 = 0
+4:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 0, -8, 0, 8, -8, 8)
+4:0/0/custom_data_0 = true
+4:0/0/custom_data_1 = true
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, -8, -8, 8, 8)
+0:1/0/custom_data_0 = true
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, 0, -8, 0, -8, 8, 8, 8)
+1:1/0/custom_data_0 = true
+1:1/0/custom_data_1 = true
+2:1/0 = 0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, 0, 8, 8, -8, 8, -8, -8)
+2:1/0/custom_data_0 = true
+3:1/0 = 0
+3:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 0, 8)
+3:1/0/custom_data_0 = true
+4:1/0 = 0
+4:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -8, 0, -8, 0, 8, 8, 8)
+4:1/0/custom_data_0 = true
+4:1/0/custom_data_1 = true
+1:2/0 = 0
+1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, 0, -8, 0, -8, -8, 8, -8)
+1:2/0/custom_data_0 = true
+1:2/0/custom_data_1 = true
+2:2/0 = 0
+2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, 0, 8, 8, -8, 8)
+2:2/0/custom_data_0 = true
+3:2/0 = 0
+3:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -8, 8, 8, 0, 8)
+3:2/0/custom_data_0 = true
+3:3/0 = 0
+3:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, 8, 0, -8)
+3:3/0/custom_data_0 = true
+2:3/0 = 0
+2:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 0, -8, 8, 8, 8)
+2:3/0/custom_data_0 = true
+4:2/0 = 0
+4:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, 0, 8, 8, -8, 8, 8)
+4:2/0/custom_data_0 = true
+0:2/0 = 0
+0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -8, 8, 8, -8, -8)
+0:2/0/custom_data_0 = true
+0:3/0 = 0
+0:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, -8)
+0:3/0/custom_data_0 = true
+0:4/0 = 0
+1:3/0 = 0
+4:3/0 = 0
+4:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, -8, -8, 0, -8, 8, 8)
+4:3/0/custom_data_0 = true
+1:4/0 = 0
+5:0/0 = 0
+5:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(0, -8, 8, 0, 8, 8, -8, 8, -8, 0)
+5:0/0/custom_data_0 = true
+5:1/0 = 0
+5:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(0, 0, 8, 8, -8, 8)
+5:1/0/custom_data_0 = true
+5:2/0 = 0
+5:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(0, 0, 8, 8, -8, 8)
+5:2/0/custom_data_0 = true
+5:3/0 = 0
+5:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(0, -8, 8, 0, 8, 8, -8, 8, -8, 0)
+5:3/0/custom_data_0 = true
+3:4/0 = 0
+2:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+7:4/0 = 0
+8:4/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_yvmk3"]
+physics_layer_0/collision_layer = 1
+custom_data_layer_0/name = "is_solid"
+custom_data_layer_0/type = 1
+custom_data_layer_1/name = "is_flat"
+custom_data_layer_1/type = 1
+sources/3 = SubResource("TileSetAtlasSource_d1xuu")
+
+[sub_resource type="GDScript" id="GDScript_aylvp"]
+script/source = "extends StaticBody2D
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.name == \"player\":
+		body.position = Vector2(0,-10)
+	elif body.is_in_group(\"Enemies\"):
+		body.position = Vector2(randf_range(-500, 500), -10)
+"
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_aylvp"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_hs5ew"]
+distance = -461.0
+
+[node name="Tilemap with Borders" type="TileMapLayer"]
+texture_filter = 1
+tile_map_data = PackedByteArray("AAAmANP/AwABAAMAAAC5/+b/AwACAAMAAAAnANH/AwABAAMAAABHAMr/AwADAAEAAABHAOn/AwAGAAQAAABMALf/AwAAAAEAADD2//T/AwACAAAAAAD1//T/AwADAAEAAGD0//X/AwAAAAAAAADz//b/AwADAAIAAADz//f/AwACAAAAAED3//T/AwABAAAAAADz//j/AwABAAAAAADz//r/AwADAAIAACDz//n/AwADAAAAACD0//v/AwAAAAAAACD2//z/AwACAAAAACD1//z/AwADAAEAAED3//z/AwABAAAAAAD4//z/AwADAAAAAHD5//z/AwADAAEAAFD6//v/AwAAAAAAADD7//n/AwADAAAAADD7//r/AwADAAEAACD7//j/AwABAAAAAAD7//f/AwACAAAAAFD7//b/AwADAAEAAAD6//X/AwAAAAAAABD4//T/AwADAAAAAFD5//T/AwADAAEAAHD6//r/AwAAAAAAAAD5//v/AwAAAAAAAAD1//v/AwAAAAAAAFD0//r/AwAAAAAAAFD1//X/AwAAAAAAADD0//b/AwAAAAAAADD5//X/AwAAAAAAAGD6//b/AwAAAAAAAGACAP7/AwAAAAEAAGAEAPz/AwAAAAEAAGAFAPz/AwAAAAEAAAAHAP7/AwAAAAEAAAAGAP3/AwAAAAEAAAADAP3/AwAAAAEAABACAP//AwAAAAEAAEADAAAAAwAAAAEAAEAEAAEAAwAAAAEAAEAFAAEAAwAAAAEAACAGAAAAAwAAAAEAACAHAP//AwAAAAEAACADAP//AwAAAAEAAHADAP7/AwAAAAEAACAEAP3/AwAAAAEAACAFAP3/AwAAAAEAAEAGAP7/AwAAAAEAAEAGAP//AwAAAAEAABAFAAAAAwAAAAEAABAEAAAAAwAAAAEAAHD2/wQAAwAAAAEAAADy/wQAAwAAAAEAABDz/wQAAwABAAAAAAD0/wQAAwABAAAAAAD1/wQAAwABAAAAAADx/wcAAwAAAAAAAADx/wgAAwADAAAAADDx/wkAAwADAAAAABDx/woAAwADAAAAACDy/wYAAwABAAEAAFDy/wsAAwACAAAAABDz/wsAAwADAAEAAHD0/wsAAwAAAAAAAAD1/wcAAwAAAAAAAAD1/wgAAwADAAAAADD1/wkAAwAEAAAAAAD1/woAAwACAAAAAFD2/wYAAwADAAAAADDx/wsAAwADAAIAACDy/wcAAwADAAEAACDy/wwAAwADAAEAAEDz/wwAAwABAAEAACD0/wwAAwADAAEAAFD1/wsAAwACAAEAACD2/wcAAwADAAEAACD2/wUAAwABAAAAAADy/wUAAwACAAAAAHD1/wUAAwAAAAAAAGA=")
+tile_set = SubResource("TileSet_yvmk3")
+script = ExtResource("2_o37mh")
+metadata/_edit_horizontal_guides_ = [-80.0]
+
+[node name="World Boundary" type="StaticBody2D" parent="."]
+position = Vector2(1, 0)
+collision_mask = 7
+script = SubResource("GDScript_aylvp")
+
+[node name="left" type="CollisionShape2D" parent="World Boundary"]
+position = Vector2(-1123, 0)
+rotation = 1.5708
+shape = SubResource("WorldBoundaryShape2D_aylvp")
+
+[node name="right" type="CollisionShape2D" parent="World Boundary"]
+position = Vector2(1226, 0)
+rotation = -1.5708
+shape = SubResource("WorldBoundaryShape2D_aylvp")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_mask = 7
+
+[node name="bottom" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(32, 189)
+shape = SubResource("WorldBoundaryShape2D_hs5ew")
+
+[connection signal="body_entered" from="Area2D" to="World Boundary" method="_on_area_2d_body_entered"]
